@@ -29,9 +29,9 @@
       <div class="mx-auto max-w-5xl px-6 py-8 md:py-10">
         <article class="border border-[#2b713a] bg-[#061006] p-6 md:p-10">
           <header>
-            <p class="text-[11px] uppercase tracking-[0.17em] text-[#7cd88f]"><prop name="date"></prop> · <prop name="read" default="quick read"></prop></p>
-            <h1 class="mt-2 font-['Space_Grotesk'] text-4xl font-bold uppercase leading-tight text-[#dcffe2] md:text-5xl"><prop name="title"></prop></h1>
-            <p class="mt-4 max-w-4xl text-sm leading-7 text-[#a3ebb1]"><prop name="dek" default=""></prop></p>
+            <p class="text-[11px] uppercase tracking-[0.17em] text-[#7cd88f]"><bind name="date"></bind> · <bind name="read" default="quick read"></bind></p>
+            <h1 class="mt-2 font-['Space_Grotesk'] text-4xl font-bold uppercase leading-tight text-[#dcffe2] md:text-5xl"><bind name="title"></bind></h1>
+            <p class="mt-4 max-w-4xl text-sm leading-7 text-[#a3ebb1]"><bind name="dek" default=""></bind></p>
           </header>
           <div class="mt-8 space-y-6 text-sm leading-7 text-[#b5f9c2]"><slot></slot></div>
           <section class="mt-10 border-t border-[#215c2e] pt-5 text-sm text-[#9fe0ab]"><slot name="afterword"></slot></section>

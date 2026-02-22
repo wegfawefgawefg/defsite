@@ -59,7 +59,7 @@ Input (`src/index.html`):
   <body>
     <def-card>
       <article class="card">
-        <h2><prop name="title" default="Untitled"></prop></h2>
+        <h2><bind name="title" default="Untitled"></bind></h2>
         <div><slot></slot></div>
       </article>
     </def-card>
@@ -83,7 +83,8 @@ Output: plain expanded HTML with `def-*` removed.
 
 - `def-*` component definitions inline in HTML.
 - Invocation by matching custom tag.
-- `<prop name="..." default="...">` for attributes.
+- `<bind name="..." default="...">` for attributes.
+- `bind-*` attributes for binding invocation values into output attributes.
 - Default and named slots via `<slot>` and `<slot name="...">`.
 - Lexical scoping + shadowing of definitions.
 - Cycle detection and expansion depth guard.

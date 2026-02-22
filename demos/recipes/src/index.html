@@ -43,6 +43,10 @@
       </div>
     </def-recipe-shell>
 
+    <def-noscript-recipe-link>
+      <li><a class="text-rose-700 underline" bind-href="href" bind-aria-label="label"><bind name="label"></bind></a></li>
+    </def-noscript-recipe-link>
+
     <recipe-shell>
       <div slot="hero">
         <p class="text-xs uppercase tracking-[0.22em] text-rose-700">Contemporary Japanese home cooking</p>
@@ -77,16 +81,16 @@
           <div class="mt-6 rounded-2xl border border-stone-300/60 bg-white p-5 text-sm text-stone-700 shadow-sm">
             <p class="font-semibold">JavaScript is disabled, so interactive filters are unavailable.</p>
             <ul class="mt-3 list-disc space-y-1 pl-5">
-              <li><a class="text-rose-700 underline" href="recipes/oyakodon.html">Oyakodon</a></li>
-              <li><a class="text-rose-700 underline" href="recipes/japanese-curry-rice.html">Japanese Curry Rice</a></li>
-              <li><a class="text-rose-700 underline" href="recipes/nikujaga.html">Nikujaga</a></li>
-              <li><a class="text-rose-700 underline" href="recipes/okonomiyaki.html">Okonomiyaki</a></li>
-              <li><a class="text-rose-700 underline" href="recipes/onigiri.html">Onigiri Three Ways</a></li>
-              <li><a class="text-rose-700 underline" href="recipes/zaru-soba.html">Zaru Soba</a></li>
-              <li><a class="text-rose-700 underline" href="recipes/kitsune-udon.html">Kitsune Udon</a></li>
-              <li><a class="text-rose-700 underline" href="recipes/tonkatsu-cabbage.html">Tonkatsu with Cabbage</a></li>
-              <li><a class="text-rose-700 underline" href="recipes/miso-soup-tofu.html">Miso Soup with Tofu</a></li>
-              <li><a class="text-rose-700 underline" href="recipes/tamagoyaki-bento.html">Tamagoyaki for Bento</a></li>
+              <noscript-recipe-link href="recipes/oyakodon.html" label="Oyakodon"></noscript-recipe-link>
+              <noscript-recipe-link href="recipes/japanese-curry-rice.html" label="Japanese Curry Rice"></noscript-recipe-link>
+              <noscript-recipe-link href="recipes/nikujaga.html" label="Nikujaga"></noscript-recipe-link>
+              <noscript-recipe-link href="recipes/okonomiyaki.html" label="Okonomiyaki"></noscript-recipe-link>
+              <noscript-recipe-link href="recipes/onigiri.html" label="Onigiri Three Ways"></noscript-recipe-link>
+              <noscript-recipe-link href="recipes/zaru-soba.html" label="Zaru Soba"></noscript-recipe-link>
+              <noscript-recipe-link href="recipes/kitsune-udon.html" label="Kitsune Udon"></noscript-recipe-link>
+              <noscript-recipe-link href="recipes/tonkatsu-cabbage.html" label="Tonkatsu with Cabbage"></noscript-recipe-link>
+              <noscript-recipe-link href="recipes/miso-soup-tofu.html" label="Miso Soup with Tofu"></noscript-recipe-link>
+              <noscript-recipe-link href="recipes/tamagoyaki-bento.html" label="Tamagoyaki for Bento"></noscript-recipe-link>
             </ul>
           </div>
         </noscript>

@@ -44,6 +44,10 @@
       </div>
     </def-blog-shell>
 
+    <def-noscript-post-link>
+      <li><a class="underline hover:text-[#d8ffe0]" bind-href="href" bind-aria-label="label"><bind name="label"></bind></a></li>
+    </def-noscript-post-link>
+
     <blog-shell>
       <div slot="hero">
         <p class="text-xs uppercase tracking-[0.2em] text-[#70f58a]">Systems notes from the edge</p>
@@ -78,16 +82,16 @@
           <div class="mt-6 border border-[#2a6936] bg-[#071007] p-5 text-sm text-[#b4f7c1]">
             <p class="font-semibold uppercase tracking-[0.08em]">JavaScript is disabled; interactive filters are unavailable.</p>
             <ul class="mt-3 list-disc space-y-1 pl-5">
-              <li><a class="underline hover:text-[#d8ffe0]" href="posts/lisp-macros-with-guardrails.html">Macros With Guardrails</a></li>
-              <li><a class="underline hover:text-[#d8ffe0]" href="posts/rust-ffi-c-without-footguns.html">Rust FFI Into C</a></li>
-              <li><a class="underline hover:text-[#d8ffe0]" href="posts/c-byte-level-profiling-notes.html">C Byte-Level Profiling Notes</a></li>
-              <li><a class="underline hover:text-[#d8ffe0]" href="posts/metaprogramming-debuggable-builds.html">Metaprogramming for Debuggable Builds</a></li>
-              <li><a class="underline hover:text-[#d8ffe0]" href="posts/designing-small-dsls-for-tools.html">Small DSLs for Tooling</a></li>
-              <li><a class="underline hover:text-[#d8ffe0]" href="posts/voxel-bytepacking-for-streaming.html">Voxel Byte-Packing</a></li>
-              <li><a class="underline hover:text-[#d8ffe0]" href="posts/fuzzing-parser-attack-surface.html">Fuzzing Parser Attack Surface</a></li>
-              <li><a class="underline hover:text-[#d8ffe0]" href="posts/reversing-firmware-with-constraints.html">Reversing Firmware With Constraints</a></li>
-              <li><a class="underline hover:text-[#d8ffe0]" href="posts/binary-size-budgets-rust-c.html">Binary Size Budgets in Rust and C</a></li>
-              <li><a class="underline hover:text-[#d8ffe0]" href="posts/build-your-own-static-analyzer-pass.html">Build a Static Analyzer Pass</a></li>
+              <noscript-post-link href="posts/lisp-macros-with-guardrails.html" label="Macros With Guardrails"></noscript-post-link>
+              <noscript-post-link href="posts/rust-ffi-c-without-footguns.html" label="Rust FFI Into C"></noscript-post-link>
+              <noscript-post-link href="posts/c-byte-level-profiling-notes.html" label="C Byte-Level Profiling Notes"></noscript-post-link>
+              <noscript-post-link href="posts/metaprogramming-debuggable-builds.html" label="Metaprogramming for Debuggable Builds"></noscript-post-link>
+              <noscript-post-link href="posts/designing-small-dsls-for-tools.html" label="Small DSLs for Tooling"></noscript-post-link>
+              <noscript-post-link href="posts/voxel-bytepacking-for-streaming.html" label="Voxel Byte-Packing"></noscript-post-link>
+              <noscript-post-link href="posts/fuzzing-parser-attack-surface.html" label="Fuzzing Parser Attack Surface"></noscript-post-link>
+              <noscript-post-link href="posts/reversing-firmware-with-constraints.html" label="Reversing Firmware With Constraints"></noscript-post-link>
+              <noscript-post-link href="posts/binary-size-budgets-rust-c.html" label="Binary Size Budgets in Rust and C"></noscript-post-link>
+              <noscript-post-link href="posts/build-your-own-static-analyzer-pass.html" label="Build a Static Analyzer Pass"></noscript-post-link>
             </ul>
           </div>
         </noscript>

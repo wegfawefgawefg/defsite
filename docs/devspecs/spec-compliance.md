@@ -8,9 +8,10 @@ Tracks `docs/devspecs/component-spec.md` requirements against automated fixtures
 |---|---|---|---|
 | 2.1 Definition syntax | `def-*` declares symbol from suffix | Covered | `tests/pass/basic_slots` |
 | 2.2 Invocation syntax | matching symbol tag expands template | Covered | `tests/pass/basic_slots` |
-| 2.3 Props | `<prop name>` reads invocation attributes | Covered | `tests/pass/nested_components` |
-| 2.3 Prop fallback | `<prop default>` used when missing | Covered | `tests/pass/nested_components` |
-| 2.3 Missing prop warning | missing prop without default warns | Covered | `tests/pass/missing_prop_warning` |
+| 2.3 Binds | `<bind name>` reads invocation attributes | Covered | `tests/pass/nested_components` |
+| 2.3 Bind fallback | `<bind default>` used when missing | Covered | `tests/pass/nested_components` |
+| 2.3 Missing bind warning | missing bind without default warns | Covered | `tests/pass/missing_bind_warning` |
+| 2.3.1 Attribute target binds | `bind-*` sets output attributes from invocation attributes | Covered | `tests/pass/bind_attrs` |
 | 2.4 Default slot | unnamed children projected into `<slot>` | Covered | `tests/pass/basic_slots` |
 | 2.4 Named slots | `slot="name"` routes to `<slot name="...">` | Covered | `tests/pass/basic_slots` |
 | 3 Scoping | nearest lexical scope wins | Covered | `tests/pass/scoping_shadow` |

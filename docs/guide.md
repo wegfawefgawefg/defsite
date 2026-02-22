@@ -23,7 +23,7 @@ You define reusable components with `def-*` tags, invoke them as regular custom 
 ```html
 <def-card>
   <article class="card">
-    <h2><prop name="title" default="Untitled"></prop></h2>
+    <h2><bind name="title" default="Untitled"></bind></h2>
     <div><slot></slot></div>
   </article>
 </def-card>
@@ -49,6 +49,16 @@ You define reusable components with `def-*` tags, invoke them as regular custom 
   <h1 slot="header">Hello</h1>
   <p>Body content.</p>
 </layout>
+```
+
+### 4. Bind Invocation Values Into Output Attributes
+
+```html
+<def-cta-link>
+  <a class="cta" bind-href="href" bind-aria-label="label">
+    <bind name="label"></bind>
+  </a>
+</def-cta-link>
 ```
 
 ## Resolution and Scoping

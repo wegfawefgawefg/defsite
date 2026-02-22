@@ -16,7 +16,7 @@
 
     <def-feature-card>
       <article class="feature-card">
-        <h2><prop name="title" default="Untitled"></prop></h2>
+        <h2><bind name="title" default="Untitled"></bind></h2>
         <p class="meta"><slot name="meta"></slot></p>
         <div class="content"><slot></slot></div>
       </article>
@@ -25,6 +25,10 @@
     <def-badge>
       <span class="badge global"><slot></slot></span>
     </def-badge>
+
+    <def-action-link>
+      <a bind-href="href"><bind name="label"></bind></a>
+    </def-action-link>
 
     <shell>
       <h1 slot="header">HTML-First Build Demo</h1>
@@ -43,7 +47,7 @@
       </section>
 
       <p>Outer scope badge: <badge>GLOBAL</badge></p>
-      <a slot="footer" href="about.html">About this demo</a>
+      <action-link slot="footer" href="about.html" label="About this demo"></action-link>
     </shell>
   </body>
 </html>

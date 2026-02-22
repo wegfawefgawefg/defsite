@@ -1,2 +1,0 @@
-missing prop 'title' on <card>
-Build complete

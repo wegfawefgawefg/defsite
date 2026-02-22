@@ -30,7 +30,7 @@ static bool should_expand_component(Node *node, Scope *scope, DefEntry **entry_o
     if (node->type != NODE_ELEMENT) {
         return false;
     }
-    if (is_def_tag(node->tag) || str_eq(node->tag, "prop") || str_eq(node->tag, "slot")) {
+    if (is_def_tag(node->tag) || str_eq(node->tag, "bind") || str_eq(node->tag, "slot")) {
         return false;
     }
     if (is_native_tag(node->tag)) {
@@ -68,7 +68,64 @@ static NodeList *slot_lookup_payload(SlotPayload *payload, const char *name) {
     return NULL;
 }
 
-static void substitute_props_slots(Node *node, const Node *invocation, SlotPayload *payload, BuildCtx *ctx) {
+static void set_or_replace_attr(Node *node, const char *name, const char *value) {
+    for (size_t i = 0; i < node->attr_count; i++) {
+        if (str_eq(node->attrs[i].name, name)) {
+            free(node->attrs[i].value);
+            node->attrs[i].value = xstrdup(value ? value : "");
+            return;
+        }
+    }
+    node_add_attr(node, name, value ? value : "");
+}
+
+static void apply_bind_attrs(Node *node, const Node *invocation, BuildCtx *ctx) {
+    size_t i = 0;
+    while (i < node->attr_count) {
+        const char *bind_name = node->attrs[i].name;
+        const char *bind_source = node->attrs[i].value;
+
+        if (!starts_with(bind_name, "bind-") || strlen(bind_name) <= 5) {
+            i++;
+            continue;
+        }
+
+        char *bind_name_copy = xstrdup(bind_name);
+        char *bind_source_copy = xstrdup(bind_source ? bind_source : "");
+        const char *target_attr = bind_name_copy + 5;
+
+        node_remove_attr(node, bind_name_copy);
+
+        if (!target_attr[0]) {
+            log_error(ctx, "invalid bind attribute '%s'", bind_name_copy);
+            free(bind_name_copy);
+            free(bind_source_copy);
+            continue;
+        }
+
+        if (!bind_source_copy[0]) {
+            log_error(ctx, "bind attribute '%s' missing source key", bind_name_copy);
+            free(bind_name_copy);
+            free(bind_source_copy);
+            continue;
+        }
+
+        const char *value = node_get_attr(invocation, bind_source_copy);
+        if (!value) {
+            log_warning(ctx, "missing bind '%s' on <%s>", bind_source_copy, invocation->tag);
+            free(bind_name_copy);
+            free(bind_source_copy);
+            continue;
+        }
+
+        set_or_replace_attr(node, target_attr, value);
+
+        free(bind_name_copy);
+        free(bind_source_copy);
+    }
+}
+
+static void substitute_binds_slots(Node *node, const Node *invocation, SlotPayload *payload, BuildCtx *ctx) {
     size_t i = 0;
     while (i < node->child_count) {
         Node *child = node->children[i];
@@ -77,20 +134,22 @@ static void substitute_props_slots(Node *node, const Node *invocation, SlotPaylo
             continue;
         }
 
-        if (str_eq(child->tag, "prop")) {
+        apply_bind_attrs(child, invocation, ctx);
+
+        if (str_eq(child->tag, "bind")) {
             const char *name = node_get_attr(child, "name");
             const char *fallback = node_get_attr(child, "default");
             const char *value = NULL;
 
             if (!name || !name[0]) {
-                log_error(ctx, "<prop> missing required name attribute");
+                log_error(ctx, "<bind> missing required name attribute");
                 value = "";
             } else {
                 value = node_get_attr(invocation, name);
                 if (!value) {
                     value = fallback ? fallback : "";
                     if (!fallback) {
-                        log_warning(ctx, "missing prop '%s' on <%s>", name, invocation->tag);
+                        log_warning(ctx, "missing bind '%s' on <%s>", name, invocation->tag);
                     }
                 }
             }
@@ -119,7 +178,7 @@ static void substitute_props_slots(Node *node, const Node *invocation, SlotPaylo
             continue;
         }
 
-        substitute_props_slots(child, invocation, payload, ctx);
+        substitute_binds_slots(child, invocation, payload, ctx);
         i++;
     }
 }
@@ -178,7 +237,7 @@ static bool expand_component(Node *invocation,
     collect_slot_payload(invocation, &payload);
 
     Node *synthetic = make_synthetic_root_from_def(resolved_def->def_node);
-    substitute_props_slots(synthetic, invocation, &payload, ctx);
+    substitute_binds_slots(synthetic, invocation, &payload, ctx);
 
     for (size_t i = 0; i < payload.named_count; i++) {
         if (!payload.named[i].used && payload.named[i].nodes.count > 0) {

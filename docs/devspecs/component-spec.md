@@ -23,7 +23,7 @@ Example:
 ```html
 <def-card>
   <article class="card">
-    <h2><prop name="title"></prop></h2>
+    <h2><bind name="title"></bind></h2>
     <div class="body"><slot></slot></div>
   </article>
 </def-card>
@@ -43,16 +43,32 @@ Invocation is a matching element tag by symbol name.
 </card>
 ```
 
-### 2.3 Props (attributes)
+### 2.3 Binds (invocation attributes)
 
-Invocation attributes are available in template using `<prop name="...">`.
+Invocation attributes are available in template using `<bind name="...">`.
 
-- `<prop name="title"></prop>` inserts escaped text value of attribute `title`
-- Missing prop yields empty string unless a fallback is provided:
+- `<bind name="title"></bind>` inserts escaped text value of attribute `title`
+- Missing bind yields empty string unless a fallback is provided:
 
 ```html
-<prop name="title" default="Untitled"></prop>
+<bind name="title" default="Untitled"></bind>
 ```
+
+### 2.3.1 Attribute target binds
+
+Template elements may bind invocation values into output attributes with `bind-*`:
+
+```html
+<a bind-href="url" bind-aria-label="title">
+  <bind name="title"></bind>
+</a>
+```
+
+Rules:
+- `bind-<target>="source"` sets output attribute `<target>` from invocation attribute `source`
+- If `<target>` already exists, the bound value replaces it
+- Missing source emits warning and leaves target unset
+- `bind-*` attributes are removed from final output
 
 ### 2.4 Slots
 
@@ -105,7 +121,7 @@ Within a single scope, `def-*` are hoisted for resolution.
 1. Parse source HTML to DOM.
 2. Build symbol tables per scope from `def-*` nodes.
 3. Expand invocations recursively.
-4. Resolve props and slots.
+4. Resolve binds and slots.
 5. Remove `def-*` nodes from output.
 6. Serialize final HTML.
 
@@ -125,7 +141,7 @@ Errors (fail build):
 Warnings (continue build):
 - Unknown invocation symbol
 - Unknown named slot payload (no matching `<slot name>`)
-- Missing prop with no default
+- Missing bind with no default
 
 ## 9. Mock User Experience
 
@@ -202,4 +218,4 @@ Warnings (continue build):
 1. Explicit cross-file `def-use` import mechanism.
 2. Fallback content inside `<slot>` elements.
 3. Attribute passthrough helper (`<attrs></attrs>` placeholder).
-4. Typed props (`type="number|bool|string"`).
+4. Typed binds (`type="number|bool|string"`).
