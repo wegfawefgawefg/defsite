@@ -6,6 +6,11 @@
   <strong>HTML-first static site compiler with component tags and metadata indexing.</strong>
 </p>
 
+<p align="center">
+  <img src="assets/blog.png" alt="DefSite blog demo screenshot" width="46%" />
+  <img src="assets/cooking_site.png" alt="DefSite recipes demo screenshot" width="46%" />
+</p>
+
 DefSite compiles plain HTML with inline `def-*` components into browser-ready static output.
 
 No runtime framework. No template braces. No hydration requirement.
