@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sheet Pan Harissa Chicken</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-amber-50 text-stone-900">
+    <def-recipe-header>
+      <header class="border-b border-stone-200 bg-white/90 backdrop-blur">
+        <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+          <a href="../index.html" class="text-xl font-black">Weeknight Recipes</a>
+          <nav class="flex items-center gap-5 text-sm font-semibold text-stone-600">
+            <a class="hover:text-orange-700" href="../index.html">Recipes</a>
+            <a class="hover:text-orange-700" href="../about.html">About</a>
+            <a class="hover:text-orange-700" href="../book.html">Book</a>
+            <a class="hover:text-orange-700" href="../contact.html">Contact</a>
+          </nav>
+        </div>
+      </header>
+    </def-recipe-header>
+
+    <def-recipe-page>
+      <recipe-header></recipe-header>
+      <div class="mx-auto max-w-5xl p-6 md:p-10">
+        <article class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200 md:p-8">
+          <header>
+            <h1 class="text-4xl font-black"><prop name="title"></prop></h1>
+            <p class="mt-2 text-sm text-stone-600"><prop name="subtitle"></prop></p>
+          </header>
+          <div class="mt-6 grid gap-6 md:grid-cols-3">
+            <section class="space-y-6 md:col-span-2"><slot></slot></section>
+            <aside class="rounded-xl bg-stone-100 p-4"><slot name="aside"></slot></aside>
+          </div>
+        </article>
+      </div>
+    </def-recipe-page>
+
+    <def-step-list>
+      <ol class="list-decimal space-y-2 pl-5 text-stone-700"><slot></slot></ol>
+    </def-step-list>
+
+    <recipe-page title="Sheet Pan Harissa Chicken" subtitle="Serves 4 · 40 minutes · one tray">
+      <p>This one-pan dinner balances sweet roasted carrots with spicy harissa chicken and bright lemon at the finish.</p>
+
+      <h2 class="text-xl font-black">Ingredients</h2>
+      <ul class="list-disc space-y-1 pl-5">
+        <li>6 bone-in chicken thighs</li>
+        <li>2 tbsp harissa paste</li>
+        <li>1 tbsp olive oil</li>
+        <li>4 carrots, cut into batons</li>
+        <li>1 red onion, sliced</li>
+        <li>1 lemon, halved</li>
+      </ul>
+
+      <h2 class="text-xl font-black">Method</h2>
+      <step-list>
+        <li>Toss chicken with harissa, salt, and olive oil.</li>
+        <li>Spread carrots and onion on a tray; nestle chicken on top.</li>
+        <li>Roast at 220C for 30 to 35 minutes until deeply browned.</li>
+        <li>Squeeze roasted lemon over everything before serving.</li>
+      </step-list>
+
+      <div slot="aside">
+        <h3 class="font-black">Serve with</h3>
+        <ul class="mt-2 list-disc space-y-1 pl-5 text-sm">
+          <li>Couscous or flatbread</li>
+          <li>Greek yogurt with herbs</li>
+          <li>Simple cucumber salad</li>
+        </ul>
+      </div>
+    </recipe-page>
+  </body>
+</html>

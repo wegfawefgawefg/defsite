@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Nested Component Demo</title>
+    <link rel="stylesheet" href="site.css">
+  </head>
+  <body>
+    <def-panel>
+      <section class="panel">
+        <def-row>
+          <div class="row"><slot></slot></div>
+        </def-row>
+
+        <h1><prop name="title" default="Panel"></prop></h1>
+        <row><slot></slot></row>
+      </section>
+    </def-panel>
+
+    <panel title="Nested Defs">
+      <p>This row comes from a nested local component definition.</p>
+    </panel>
+
+    <p><a href="index.html">Back</a></p>
+  </body>
+</html>

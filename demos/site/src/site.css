@@ -1,0 +1,41 @@
+body {
+  font-family: sans-serif;
+  margin: 2rem;
+  line-height: 1.4;
+}
+
+.shell {
+  border: 2px solid #ddd;
+  padding: 1rem;
+}
+
+.feature-card {
+  border: 1px solid #999;
+  margin: 1rem 0;
+  padding: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.3rem;
+}
+
+.global {
+  background: #ddeeff;
+}
+
+.local {
+  background: #ffdca8;
+}
+
+.panel {
+  border: 1px dashed #666;
+  padding: 1rem;
+}
+
+.row {
+  border-top: 1px solid #ccc;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+}

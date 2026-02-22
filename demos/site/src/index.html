@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Def Components Demo</title>
+    <link rel="stylesheet" href="site.css">
+  </head>
+  <body>
+    <def-shell>
+      <main class="shell">
+        <header><slot name="header"></slot></header>
+        <section><slot></slot></section>
+        <footer><slot name="footer"></slot></footer>
+      </main>
+    </def-shell>
+
+    <def-feature-card>
+      <article class="feature-card">
+        <h2><prop name="title" default="Untitled"></prop></h2>
+        <p class="meta"><slot name="meta"></slot></p>
+        <div class="content"><slot></slot></div>
+      </article>
+    </def-feature-card>
+
+    <def-badge>
+      <span class="badge global"><slot></slot></span>
+    </def-badge>
+
+    <shell>
+      <h1 slot="header">HTML-First Build Demo</h1>
+
+      <feature-card title="Named Slots">
+        <strong slot="meta">stable-v1</strong>
+        <p>Components are resolved at build time.</p>
+      </feature-card>
+
+      <section>
+        <def-badge>
+          <strong class="badge local"><slot></slot></strong>
+        </def-badge>
+
+        <p>Inner scope badge: <badge>LOCAL</badge></p>
+      </section>
+
+      <p>Outer scope badge: <badge>GLOBAL</badge></p>
+      <a slot="footer" href="about.html">About this demo</a>
+    </shell>
+  </body>
+</html>

@@ -1,0 +1,2 @@
+duplicate component definition for symbol 'card'
+Build failed

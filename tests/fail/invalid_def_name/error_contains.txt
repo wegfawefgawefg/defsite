@@ -1,0 +1,2 @@
+invalid component definition tag <def-9bad>
+Build failed

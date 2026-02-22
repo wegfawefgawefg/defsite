@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Shipping a Tiny HTML Compiler</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-slate-100 text-slate-900">
+    <def-blog-header>
+      <header class="border-b border-slate-200 bg-white/90 backdrop-blur">
+        <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
+          <a href="../index.html" class="text-xl font-black">Signal &amp; Sourdough</a>
+          <nav class="flex items-center gap-5 text-sm font-semibold text-slate-600">
+            <a class="hover:text-indigo-700" href="../index.html">Posts</a>
+            <a class="hover:text-indigo-700" href="../about.html">About</a>
+          </nav>
+        </div>
+      </header>
+    </def-blog-header>
+
+    <def-post-shell>
+      <blog-header></blog-header>
+      <div class="mx-auto max-w-4xl p-6 md:p-10">
+        <article class="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 md:p-10">
+          <header>
+            <p class="text-xs uppercase tracking-[0.18em] text-slate-500"><prop name="date"></prop></p>
+            <h1 class="mt-2 text-4xl font-black leading-tight md:text-5xl"><prop name="title"></prop></h1>
+            <p class="mt-3 max-w-3xl text-slate-600"><prop name="dek" default=""></prop></p>
+          </header>
+          <div class="mt-8 space-y-6 leading-7 text-slate-700"><slot></slot></div>
+          <section class="mt-10"><slot name="afterword"></slot></section>
+        </article>
+      </div>
+    </def-post-shell>
+
+    <def-callout>
+      <aside class="rounded-xl border-l-4 border-indigo-500 bg-indigo-50 p-4 text-indigo-950">
+        <p class="font-bold"><prop name="title" default="Note"></prop></p>
+        <p class="mt-1"><slot></slot></p>
+      </aside>
+    </def-callout>
+
+    <post-shell
+      title="Shipping a Tiny HTML Compiler"
+      date="February 22, 2026"
+      dek="How we designed a deterministic HTML-first compiler with scoped symbols, slots, and predictable output.">
+      <p>The first design decision was aggressively boring: parse HTML into a real tree, avoid line-based patching, and keep expansion rules explicit. This eliminated whole classes of edge cases before they appeared.</p>
+      <p>Component resolution walks lexical scope outward. The nearest matching symbol wins, which makes local overrides easy to reason about and keeps accidental global collisions low.</p>
+      <p>Build-time expansion means output artifacts are plain HTML. Deploying to static hosting stays simple, caching remains straightforward, and pages can be inspected without hidden runtime machinery.</p>
+
+      <callout title="Constraint that paid off">
+        We intentionally did not add loops or expression syntax in v1. Composition first; language features later only if tests justify them.
+      </callout>
+
+      <h2 class="text-2xl font-black">What made this reliable</h2>
+      <ul class="list-disc space-y-2 pl-6">
+        <li>Cycle detection for recursive component graphs.</li>
+        <li>Warning surfaces for missing props and unknown named slots.</li>
+        <li>A fixture suite with pass and fail cases as contract.</li>
+      </ul>
+
+      <div slot="afterword" class="rounded-xl bg-slate-100 p-4 text-sm text-slate-600">
+        Continue reading: <a class="font-semibold text-indigo-700 hover:text-indigo-900" href="post-scoping.html">Scope Shadowing, but Friendly</a>
+      </div>
+    </post-shell>
+  </body>
+</html>
