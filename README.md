@@ -1,47 +1,25 @@
-# DefSite
+<p align="center">
+  <img src="assets/logo/logo-horizontal-1200x240.png" alt="DefSite" width="720" />
+</p>
 
-DefSite is an HTML-first static site compiler.
+<p align="center">
+  <strong>HTML-first static site compiler with component tags and metadata indexing.</strong>
+</p>
 
-It expands inline `def-*` component definitions at build time into plain browser-ready HTML, with optional metadata indexing for search/filter UIs.
+DefSite compiles plain HTML with inline `def-*` components into browser-ready static output.
 
-## Project History
+No runtime framework. No template braces. No hydration requirement.
 
-- **2024-10-02**: initial ideation and prototype commits (`41d7d3f`, `5c56362`).
-- **2026-02-22**: major rebuild into a modular C engine with richer demos and discovery indexing.
+## Why DefSite
 
-Legacy prototype artifacts are kept in `archive/legacy-2024`.
-
-## Documentation
-
-- `docs/guide.md`: primary user/developer guide (what DefSite is, how it works, how to use it).
-- `docs/devspecs/README.md`: index for development specs and design-history docs.
-- `docs/devspecs/component-spec.md`: component language design draft.
-- `docs/devspecs/spec-compliance.md`: fixture coverage matrix against the component spec.
-- `docs/devspecs/recipes-discovery-ux-plan.md`: discovery UX design-history notes.
-
-## Core Features (v1)
-
-- Inline component definitions with `def-*` tags.
-- Component invocation via matching custom tags.
-- Props via `<prop name="..." default="...">`.
-- Default and named slots via `<slot>` and `<slot name="...">`.
-- Lexical scoping and shadowing for component definitions.
-- Recursive expansion with cycle detection and depth guard.
-- Fixture-based pass/fail test suite.
-
-## Discovery Indexing
-
-When pages include root `<html data-*>` metadata:
-
-- Build emits `generated/<site>/search-index.json`.
-- Records include common top-level fields (`kind`, `slug`, `title`, etc.).
-- Records also include a generic `meta` object with all root `data-*` keys (minus `data-`).
-
-This keeps the authoring model HTML-first while allowing site-specific filters without hardcoding every new field in docs or per-site schema conventions.
+- Keep authoring in HTML, not in a separate template language.
+- Compose reusable components with lexical scoping and slots.
+- Generate deterministic static output for easy hosting and caching.
+- Build discovery/search indexes from `data-*` metadata when needed.
 
 ## Quick Start
 
-Build compiler:
+Build the compiler:
 
 ```bash
 make build
@@ -53,31 +31,105 @@ Build all demos:
 make demos
 ```
 
-Build one source directory:
+Build a single source directory:
 
 ```bash
-./scripts/build.sh demos/blog/src generated/blog
-./scripts/build.sh demos/recipes/src generated/recipes
+./scripts/build.sh demos/site/src generated/site
 ```
 
-Dev mode (watch + local server):
-
-```bash
-make dev
-```
-
-Run fixtures:
+Run fixture tests:
 
 ```bash
 make test
 ```
 
+Dev loop (watch + local server):
+
+```bash
+make dev
+```
+
+## Minimal Example
+
+Input (`src/index.html`):
+
+```html
+<!doctype html>
+<html>
+  <body>
+    <def-card>
+      <article class="card">
+        <h2><prop name="title" default="Untitled"></prop></h2>
+        <div><slot></slot></div>
+      </article>
+    </def-card>
+
+    <card title="Hello DefSite">
+      <p>Compiled at build time.</p>
+    </card>
+  </body>
+</html>
+```
+
+Build:
+
+```bash
+./bin/defsite src generated
+```
+
+Output: plain expanded HTML with `def-*` removed.
+
+## Component Features
+
+- `def-*` component definitions inline in HTML.
+- Invocation by matching custom tag.
+- `<prop name="..." default="...">` for attributes.
+- Default and named slots via `<slot>` and `<slot name="...">`.
+- Lexical scoping + shadowing of definitions.
+- Cycle detection and expansion depth guard.
+
+## Discovery Indexing
+
+If a page root contains `data-*` metadata (on `<html ...>`), DefSite emits `search-index.json`.
+
+Each record includes:
+
+- Common top-level fields (`kind`, `slug`, `title`, `summary`, etc.)
+- A generic `meta` object containing all root `data-*` fields (without the `data-` prefix)
+
+This supports site-specific search/filter UI logic without custom per-site indexer code.
+
+## Demos
+
+- `demos/site/src`: minimal language demo.
+- `demos/blog/src`: developer blog theme + post discovery UI.
+- `demos/recipes/src`: recipe site theme + recipe discovery UI.
+
+Build outputs are written to `generated/<demo>/`.
+
+## Docs
+
+- `docs/guide.md`: user/developer guide.
+- `docs/devspecs/README.md`: development specs index.
+- `docs/devspecs/component-spec.md`: component language draft.
+- `docs/devspecs/spec-compliance.md`: fixture coverage map.
+- `docs/devspecs/recipes-discovery-ux-plan.md`: discovery design history.
+
+## Project History
+
+- **2024-10-02**: initial ideation and prototype commits.
+- **2026-02-22**: modular C rewrite, richer demos, generic discovery indexing.
+
+Legacy prototype artifacts remain in `archive/legacy-2024`.
+
 ## Repository Layout
 
-- `src/main.c`: CLI entry point.
+- `src/main.c`: CLI entrypoint.
 - `src/defsite/*.c`: parser, DOM, expansion engine, discovery indexer.
-- `demos/*/src`: demo sources.
-- `generated/*`: built output.
-- `tests/pass`, `tests/fail`: fixture suites.
-- `scripts/*.sh`: build/dev/test helper scripts.
-- `archive/legacy-2024`: archived earlier prototype.
+- `scripts/*.sh`: build/dev/test helpers.
+- `tests/pass`, `tests/fail`: behavior fixtures.
+- `assets/logo/`: logo variants (horizontal + small sizes + favicon).
+
+## License
+
+Add a `LICENSE` file if you intend public reuse.
