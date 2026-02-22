@@ -6,19 +6,19 @@
     filtered: [],
     page: 1,
     query: "",
-    diet: "",
-    method: "",
+    tag: "",
+    category: "",
     sort: "newest",
   };
 
   const el = {
     search: document.getElementById("searchInput"),
-    diet: document.getElementById("dietFilter"),
-    method: document.getElementById("methodFilter"),
+    tag: document.getElementById("tagFilter"),
+    category: document.getElementById("categoryFilter"),
     sort: document.getElementById("sortFilter"),
     clear: document.getElementById("clearFilters"),
     summary: document.getElementById("resultsSummary"),
-    results: document.getElementById("recipeResults"),
+    results: document.getElementById("postResults"),
     empty: document.getElementById("emptyState"),
     prev: document.getElementById("prevPage"),
     next: document.getElementById("nextPage"),
@@ -41,8 +41,8 @@
   function parseQueryParams() {
     const params = new URLSearchParams(window.location.search);
     state.query = params.get("q") || "";
-    state.diet = params.get("diet") || "";
-    state.method = params.get("method") || "";
+    state.tag = params.get("tag") || "";
+    state.category = params.get("category") || "";
     state.sort = params.get("sort") || "newest";
     state.page = Math.max(parseInt(params.get("page") || "1", 10) || 1, 1);
 
@@ -55,11 +55,11 @@
     if (state.query) {
       params.set("q", state.query);
     }
-    if (state.diet) {
-      params.set("diet", state.diet);
+    if (state.tag) {
+      params.set("tag", state.tag);
     }
-    if (state.method) {
-      params.set("method", state.method);
+    if (state.category) {
+      params.set("category", state.category);
     }
     if (state.sort && state.sort !== "newest") {
       params.set("sort", state.sort);
@@ -67,6 +67,7 @@
     if (state.page > 1) {
       params.set("page", String(state.page));
     }
+
     const query = params.toString();
     const nextUrl = query ? `?${query}` : window.location.pathname;
     window.history.replaceState({}, "", nextUrl);
@@ -77,37 +78,37 @@
   }
 
   function populateFacets() {
-    const diets = uniqueSorted(state.allItems.flatMap((item) => item.diets || []));
-    const methods = uniqueSorted(state.allItems.map((item) => item.method || ""));
+    const tags = uniqueSorted(state.allItems.flatMap((item) => item.tags || []));
+    const categories = uniqueSorted(state.allItems.map((item) => item.category || ""));
 
-    diets.forEach((diet) => {
+    tags.forEach((tag) => {
       const option = document.createElement("option");
-      option.value = diet;
-      option.textContent = diet;
-      el.diet.appendChild(option);
+      option.value = tag;
+      option.textContent = tag;
+      el.tag.appendChild(option);
     });
 
-    methods.forEach((method) => {
+    categories.forEach((category) => {
       const option = document.createElement("option");
-      option.value = method;
-      option.textContent = method;
-      el.method.appendChild(option);
+      option.value = category;
+      option.textContent = category;
+      el.category.appendChild(option);
     });
 
-    el.diet.value = state.diet;
-    el.method.value = state.method;
+    el.tag.value = state.tag;
+    el.category.value = state.category;
   }
 
   function applyFilters() {
     const query = normalize(state.query);
-    const diet = normalize(state.diet);
-    const method = normalize(state.method);
+    const tag = normalize(state.tag);
+    const category = normalize(state.category);
 
     let items = state.allItems.filter((item) => {
-      if (diet && !(item.diets || []).map(normalize).includes(diet)) {
+      if (tag && !(item.tags || []).map(normalize).includes(tag)) {
         return false;
       }
-      if (method && normalize(item.method) !== method) {
+      if (category && normalize(item.category) !== category) {
         return false;
       }
       if (!query) {
@@ -117,8 +118,8 @@
       const haystack = [
         item.title,
         item.summary,
-        item.method,
-        (item.diets || []).join(" "),
+        item.category,
+        (item.tags || []).join(" "),
       ]
         .join(" ")
         .toLowerCase();
@@ -142,35 +143,29 @@
     state.filtered = items;
   }
 
-  function recipeCardHtml(item) {
-    const chips = (item.diets || [])
-      .map((diet) => `<span class="inline-flex rounded-full bg-stone-200 px-3 py-1 text-xs font-semibold text-stone-700">${escapeHtml(diet)}</span>`)
+  function postCardHtml(item) {
+    const tags = (item.tags || [])
+      .map((tag) => `<span class="inline-flex border border-[#327f42] bg-[#081108] px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-[#9df8ad]">${escapeHtml(tag)}</span>`)
       .join(" ");
 
-    const metaBits = [];
-    if (item.time_min !== null && item.time_min !== undefined) {
-      metaBits.push(`${escapeHtml(item.time_min)} min`);
-    }
-    if (item.difficulty) {
-      metaBits.push(escapeHtml(item.difficulty));
-    }
-    if (item.serves) {
-      metaBits.push(`serves ${escapeHtml(item.serves)}`);
-    }
+    const readLabel = item.time_min !== null && item.time_min !== undefined
+      ? `${escapeHtml(item.time_min)} min read`
+      : "Quick read";
 
     const imageHtml = item.image
-      ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title || "Recipe image")}" class="h-44 w-full object-cover">`
-      : `<div class="h-44 w-full bg-stone-200"></div>`;
+      ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title || "Post image")}" class="h-44 w-full object-cover grayscale contrast-125">`
+      : `<div class="h-44 w-full bg-[#0b180b]"></div>`;
 
     return `
-      <article class="overflow-hidden rounded-2xl border border-stone-300/60 bg-white shadow-sm">
+      <article class="overflow-hidden border border-[#2a6d39] bg-[#061006] shadow-[0_0_0_1px_rgba(56,142,78,0.25)]">
         ${imageHtml}
         <div class="p-5">
-          <p class="text-xs uppercase tracking-[0.17em] text-stone-500">${metaBits.join(" · ")}</p>
-          <h2 class="mt-2 font-['Noto_Serif_JP'] text-2xl font-black leading-tight">${escapeHtml(item.title || "Untitled")}</h2>
-          <p class="mt-2 text-sm text-stone-600">${escapeHtml(item.summary || "")}</p>
-          <div class="mt-4 flex flex-wrap gap-2">${chips}</div>
-          <a href="${escapeHtml(item.url || "#")}" class="mt-5 inline-flex w-max rounded-lg bg-stone-900 px-3 py-2 text-sm font-semibold text-stone-50 hover:bg-stone-700">Open recipe</a>
+          <p class="text-[11px] uppercase tracking-[0.16em] text-[#84da95]">${escapeHtml(item.published || "")}${item.category ? ` · ${escapeHtml(item.category)}` : ""}</p>
+          <h2 class="mt-2 font-['Space_Grotesk'] text-2xl font-bold uppercase leading-tight text-[#dbffe2]">${escapeHtml(item.title || "Untitled")}</h2>
+          <p class="mt-3 text-sm leading-7 text-[#a7eeb4]">${escapeHtml(item.summary || "")}</p>
+          <p class="mt-3 text-xs uppercase tracking-[0.14em] text-[#70cd83]">${readLabel}</p>
+          <div class="mt-4 flex flex-wrap gap-2">${tags}</div>
+          <a href="${escapeHtml(item.url || "#")}" class="mt-5 inline-flex border border-[#3b954f] bg-[#081408] px-3 py-2 text-xs font-semibold uppercase tracking-[0.1em] text-[#bfffc9] hover:bg-[#0c1d0c]">Open post</a>
         </div>
       </article>
     `;
@@ -186,10 +181,10 @@
     const start = (state.page - 1) * PAGE_SIZE;
     const pageItems = state.filtered.slice(start, start + PAGE_SIZE);
 
-    el.results.innerHTML = pageItems.map(recipeCardHtml).join("\n");
+    el.results.innerHTML = pageItems.map(postCardHtml).join("\n");
     el.empty.classList.toggle("hidden", pageItems.length > 0);
 
-    el.summary.textContent = `Showing ${pageItems.length ? start + 1 : 0}-${start + pageItems.length} of ${total} recipe${total === 1 ? "" : "s"}`;
+    el.summary.textContent = `Showing ${pageItems.length ? start + 1 : 0}-${start + pageItems.length} of ${total} post${total === 1 ? "" : "s"}`;
     el.pageInfo.textContent = `Page ${state.page} of ${totalPages}`;
 
     el.prev.disabled = state.page <= 1;
@@ -202,8 +197,8 @@
 
   function onFilterChange() {
     state.query = el.search.value.trim();
-    state.diet = el.diet.value;
-    state.method = el.method.value;
+    state.tag = el.tag.value;
+    state.category = el.category.value;
     state.sort = el.sort.value;
     state.page = 1;
     applyFilters();
@@ -219,23 +214,39 @@
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}`);
       }
-      records = await response.json();
+      const payload = await response.json();
+      records = Array.isArray(payload) ? payload : [];
     } catch (error) {
-      el.summary.textContent = `Failed to load search index: ${error}`;
+      el.summary.textContent = "Failed to load post index.";
+      el.results.innerHTML = "";
       el.empty.classList.remove("hidden");
+      el.empty.textContent = "Post index is unavailable. Run the build step to regenerate search-index.json.";
       return;
     }
 
-    state.allItems = (Array.isArray(records) ? records : [])
-      .filter((item) => normalize(item.kind) === "recipe");
+    state.allItems = records
+      .filter((item) => normalize(item.kind) === "post")
+      .map((item) => ({
+        ...item,
+        tags: Array.isArray(item.tags) ? item.tags : [],
+      }));
+
     populateFacets();
     applyFilters();
     render();
 
     el.search.addEventListener("input", onFilterChange);
-    el.diet.addEventListener("change", onFilterChange);
-    el.method.addEventListener("change", onFilterChange);
+    el.tag.addEventListener("change", onFilterChange);
+    el.category.addEventListener("change", onFilterChange);
     el.sort.addEventListener("change", onFilterChange);
+
+    el.clear.addEventListener("click", () => {
+      el.search.value = "";
+      el.tag.value = "";
+      el.category.value = "";
+      el.sort.value = "newest";
+      onFilterChange();
+    });
 
     el.prev.addEventListener("click", () => {
       if (state.page > 1) {
@@ -251,23 +262,11 @@
         render();
       }
     });
-
-    el.clear.addEventListener("click", () => {
-      state.query = "";
-      state.diet = "";
-      state.method = "";
-      state.sort = "newest";
-      state.page = 1;
-
-      el.search.value = "";
-      el.diet.value = "";
-      el.method.value = "";
-      el.sort.value = "newest";
-
-      applyFilters();
-      render();
-    });
   }
 
-  init();
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
 })();

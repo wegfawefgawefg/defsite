@@ -1,52 +1,50 @@
-# site-templating-experiment
+# DefSite
 
-An experiment in HTML-pure static site templating.
+DefSite is an HTML-first static site compiler.
 
-This project now focuses on a C-based build-time engine that expands inline `def-*`
-component definitions into plain browser-ready HTML.
+It expands inline `def-*` component definitions at build time into plain browser-ready HTML, with optional metadata indexing for search/filter UIs.
 
-## Current layout
+## Project History
 
-- `src/main.c` + `src/templater/*.c`: modular C engine implementation.
-- `docs/component-spec.md`: draft spec the implementation targets.
-- `docs/spec-compliance.md`: checklist mapping spec rules to fixtures.
-- `demos/site/src`: minimal feature demo.
-- `demos/blog/src`: larger Tailwind blog demo (`posts/` holds article pages).
-- `demos/recipes/src`: larger Tailwind recipe demo (`recipes/` holds recipe detail pages).
-- `generated/<demo>`: built demo output folders.
-- `tests/pass`: fixtures with known-correct output.
-- `tests/fail`: adversarial fixtures expected to fail.
-- `scripts/build.sh`: compile and build a source folder.
-- `scripts/build-all-demos.sh`: compile and build every demo under `demos/*/src`.
-- `scripts/dev.sh`: rebuild-on-change + local server workflow.
-- `scripts/test.sh`: run pass/fail fixture suite.
-- `archive/legacy-2024`: previous Rust/C prototype and old sample pages.
+- **2024-10-02**: initial ideation and prototype commits (`41d7d3f`, `5c56362`).
+- **2026-02-22**: major rebuild into a modular C engine with richer demos and discovery indexing.
 
-## Engine behavior (v1)
+Legacy prototype artifacts are kept in `archive/legacy-2024`.
 
-- Define components inline with tags like `<def-card> ... </def-card>`.
-- Invoke with matching symbol tags like `<card> ... </card>`.
-- Supports nested components.
-- Supports props via `<prop name="..." default="...">`.
-- Supports default and named slots via `<slot>` and `<slot name="...">`.
-- Uses lexical scoping with shadowing for component definitions.
-- Resolves symbols from nearest scope outward.
-- Supports warning/error assertions in fixture tests.
+## Documentation
 
-## Recipes Discovery Prototype
+- `docs/guide.md`: primary user/developer guide (what DefSite is, how it works, how to use it).
+- `docs/devspecs/README.md`: index for development specs and design-history docs.
+- `docs/devspecs/component-spec.md`: component language design draft.
+- `docs/devspecs/spec-compliance.md`: fixture coverage matrix against the component spec.
+- `docs/devspecs/recipes-discovery-ux-plan.md`: discovery UX design-history notes.
 
-`demos/recipes` now includes a metadata-driven discovery prototype:
+## Core Features (v1)
 
-- Recipe detail pages in `demos/recipes/src/recipes/*.html` declare metadata on the root `<html>` tag with `data-*` attributes.
-- Build generates `generated/recipes/search-index.json`.
-- `generated/recipes/index.html` loads `recipes-search.js` to provide client-side search, filter, sort, and pagination from that JSON.
+- Inline component definitions with `def-*` tags.
+- Component invocation via matching custom tags.
+- Props via `<prop name="..." default="...">`.
+- Default and named slots via `<slot>` and `<slot name="...">`.
+- Lexical scoping and shadowing for component definitions.
+- Recursive expansion with cycle detection and depth guard.
+- Fixture-based pass/fail test suite.
 
-## Usage
+## Discovery Indexing
 
-Build default demo:
+When pages include root `<html data-*>` metadata:
+
+- Build emits `generated/<site>/search-index.json`.
+- Records include common top-level fields (`kind`, `slug`, `title`, etc.).
+- Records also include a generic `meta` object with all root `data-*` keys (minus `data-`).
+
+This keeps the authoring model HTML-first while allowing site-specific filters without hardcoding every new field in docs or per-site schema conventions.
+
+## Quick Start
+
+Build compiler:
 
 ```bash
-./scripts/build.sh
+make build
 ```
 
 Build all demos:
@@ -55,21 +53,31 @@ Build all demos:
 make demos
 ```
 
-Build a specific demo (examples):
+Build one source directory:
 
 ```bash
 ./scripts/build.sh demos/blog/src generated/blog
 ./scripts/build.sh demos/recipes/src generated/recipes
 ```
 
-Dev watch + local server:
+Dev mode (watch + local server):
 
 ```bash
-./scripts/dev.sh
+make dev
 ```
 
-Run test fixtures:
+Run fixtures:
 
 ```bash
-./scripts/test.sh
+make test
 ```
+
+## Repository Layout
+
+- `src/main.c`: CLI entry point.
+- `src/defsite/*.c`: parser, DOM, expansion engine, discovery indexer.
+- `demos/*/src`: demo sources.
+- `generated/*`: built output.
+- `tests/pass`, `tests/fail`: fixture suites.
+- `scripts/*.sh`: build/dev/test helper scripts.
+- `archive/legacy-2024`: archived earlier prototype.

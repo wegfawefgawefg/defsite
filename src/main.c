@@ -1,4 +1,4 @@
-#include "templater/common.h"
+#include "defsite/common.h"
 
 #include <stdio.h>
 
@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 
     char index_path[MAX_PATH_LEN];
     snprintf(index_path, sizeof(index_path), "%s/search-index.json", out_dir);
-    generate_recipe_index(src_dir, index_path, &ctx);
+    generate_discovery_index(src_dir, index_path, &ctx);
 
     if (ctx.error_count > 0) {
         fprintf(stderr, "Build failed with %d error(s), %d warning(s).\n", ctx.error_count, ctx.warning_count);

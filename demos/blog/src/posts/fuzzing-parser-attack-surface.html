@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" data-kind="post" data-slug="fuzzing-parser-attack-surface" data-title="Fuzzing Parser Attack Surface" data-summary="Parsers are natural bug magnets. Coverage-guided fuzzing plus shrinking and corpus curation catches classes of crashes early." data-image="assets/images/fuzzing-parser-attack-surface.jpg" data-time-min="10" data-category="security" data-tags="fuzzing,parser,security,testing" data-published="2026-02-16">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fuzzing Parser Attack Surface</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="min-h-screen bg-[#050805] font-['IBM_Plex_Mono'] text-[#b8ffc6]">
+    <div class="pointer-events-none fixed inset-0 opacity-35" style="background-image: linear-gradient(rgba(30, 95, 40, 0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(30, 95, 40, 0.35) 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+    <def-blog-header>
+      <header class="sticky top-0 z-20 border-b border-[#1f5f2a] bg-[#040704]/90 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <a href="../index.html" class="font-['Space_Grotesk'] text-2xl font-bold uppercase tracking-[0.12em] text-[#8dff9e]">Ami//Devlog</a>
+          <nav class="flex items-center gap-6 text-sm font-semibold uppercase tracking-[0.09em] text-[#9de8a8]">
+            <a class="hover:text-[#d8ffe0]" href="../index.html">Posts</a>
+            <a class="hover:text-[#d8ffe0]" href="../about.html">About</a>
+          </nav>
+        </div>
+      </header>
+    </def-blog-header>
+
+    <def-post-shell>
+      <blog-header></blog-header>
+      <div class="mx-auto max-w-5xl px-6 py-8 md:py-10">
+        <article class="border border-[#2b713a] bg-[#061006] p-6 md:p-10">
+          <header>
+            <p class="text-[11px] uppercase tracking-[0.17em] text-[#7cd88f]"><prop name="date"></prop> · <prop name="read" default="quick read"></prop></p>
+            <h1 class="mt-2 font-['Space_Grotesk'] text-4xl font-bold uppercase leading-tight text-[#dcffe2] md:text-5xl"><prop name="title"></prop></h1>
+            <p class="mt-4 max-w-4xl text-sm leading-7 text-[#a3ebb1]"><prop name="dek" default=""></prop></p>
+          </header>
+          <div class="mt-8 space-y-6 text-sm leading-7 text-[#b5f9c2]"><slot></slot></div>
+          <section class="mt-10 border-t border-[#215c2e] pt-5 text-sm text-[#9fe0ab]"><slot name="afterword"></slot></section>
+        </article>
+      </div>
+    </def-post-shell>
+
+    <def-callout>
+      <aside class="border border-[#2f8742] bg-[#081408] p-4 text-[#b9ffca]">
+        <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[#7ae88f]"><prop name="title" default="Field note"></prop></p>
+        <p class="mt-2 text-sm leading-7"><slot></slot></p>
+      </aside>
+    </def-callout>
+
+    <post-shell title="Fuzzing Parser Attack Surface" date="February 16, 2026" read="10 min" dek="If your tool parses untrusted input, fuzzing is not optional. It is the fastest way to discover parser assumptions you forgot you made.">
+      <img src="../assets/images/fuzzing-parser-attack-surface.jpg" alt="AFL fuzzing logo" class="w-full border border-[#2a6f3a] bg-[#081208] object-cover">
+
+      <p>Parsers are where clean architecture dreams meet adversarial reality. Real-world input is malformed, truncated, oversized, and hostile in creative ways. Coverage-guided fuzzing finds those paths far faster than human-written tests because it keeps mutating toward unexplored branches.</p>
+      <p>The first milestone is not zero bugs; it is reproducibility. Every crash needs a minimized artifact, deterministic reproduction command, and a bug class label. Otherwise teams waste cycles rediscovering the same defect families.</p>
+
+      <callout title="Security workflow note">
+        Treat parser crashers as security-relevant until proven otherwise. Memory safety bugs in parsing code have a habit of escalating.
+      </callout>
+
+      <h2 class="font-['Space_Grotesk'] text-2xl font-bold uppercase text-[#d5ffde]">Fuzz loop that works for small teams</h2>
+      <ul class="list-disc space-y-2 pl-6">
+        <li>Seed corpus from real files plus hand-crafted edge cases.</li>
+        <li>Run continuous fuzzing in CI with capped budget.</li>
+        <li>Nightly deeper runs on dedicated hardware.</li>
+        <li>Track crash classes, not just crash counts.</li>
+      </ul>
+
+      <p>After a few weeks, parser code quality shifts noticeably. The code reads more defensive, tests become sharper, and release confidence increases because unknown unknowns get smaller.</p>
+
+      <div slot="afterword">Next dispatch: <a class="font-semibold underline hover:text-[#deffe4]" href="reversing-firmware-with-constraints.html">Reversing Firmware With Constraints</a>.</div>
+    </post-shell>
+  </body>
+</html>

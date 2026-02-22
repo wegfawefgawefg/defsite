@@ -3,18 +3,25 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Signal & Sourdough</title>
+    <title>Ami//Devlog</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="blog-search.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-slate-100 text-slate-900">
+  <body class="min-h-screen bg-[#050805] font-['IBM_Plex_Mono'] text-[#b8ffc6]">
+    <div class="pointer-events-none fixed inset-0 opacity-35" style="background-image: linear-gradient(rgba(30, 95, 40, 0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(30, 95, 40, 0.35) 1px, transparent 1px); background-size: 30px 30px;"></div>
+    <div class="pointer-events-none fixed inset-0 opacity-20" style="background-image: linear-gradient(to bottom, rgba(180, 255, 200, 0.08), rgba(180, 255, 200, 0));"></div>
+
     <def-blog-header>
-      <header class="border-b border-slate-200 bg-white/90 backdrop-blur">
-        <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <a href="index.html" class="text-xl font-black tracking-tight">Signal &amp; Sourdough</a>
-          <nav class="flex items-center gap-5 text-sm font-semibold text-slate-600">
-            <a class="hover:text-indigo-700" href="index.html">Posts</a>
-            <a class="hover:text-indigo-700" href="about.html">About</a>
-            <a class="hover:text-indigo-700" href="posts/post.html">Latest</a>
+      <header class="sticky top-0 z-20 border-b border-[#1f5f2a] bg-[#040704]/90 backdrop-blur">
+        <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+          <a href="index.html" class="font-['Space_Grotesk'] text-2xl font-bold uppercase tracking-[0.12em] text-[#8dff9e]">Ami//Devlog</a>
+          <nav class="flex items-center gap-6 text-sm font-semibold uppercase tracking-[0.09em] text-[#9de8a8]">
+            <a class="hover:text-[#d8ffe0]" href="index.html">Posts</a>
+            <a class="hover:text-[#d8ffe0]" href="about.html">About</a>
+            <a class="hover:text-[#d8ffe0]" href="posts/lisp-macros-with-guardrails.html">Latest</a>
           </nav>
         </div>
       </header>
@@ -22,81 +29,68 @@
 
     <def-blog-shell>
       <blog-header></blog-header>
-      <div class="mx-auto max-w-6xl p-6 md:p-10">
-        <section class="mb-8 rounded-3xl bg-gradient-to-r from-indigo-600 via-sky-600 to-cyan-500 p-8 text-white shadow-lg">
+      <div class="relative mx-auto max-w-7xl px-6 py-8 md:py-10">
+        <section class="mb-6 border border-[#2f7f3f] bg-[#081108] p-6 md:p-8">
           <slot name="hero"></slot>
         </section>
-        <main class="grid gap-6 lg:grid-cols-3">
-          <section class="space-y-6 lg:col-span-2"><slot></slot></section>
-          <aside class="space-y-6"><slot name="sidebar"></slot></aside>
-        </main>
+
+        <section class="mb-6 border border-[#2a6936] bg-[#070d07] p-5">
+          <slot name="controls"></slot>
+        </section>
+
+        <section>
+          <slot name="results"></slot>
+        </section>
       </div>
     </def-blog-shell>
 
-    <def-post-card>
-      <article class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-slate-200">
-        <p class="mb-2 text-xs uppercase tracking-[0.18em] text-slate-500"><prop name="date" default="Undated"></prop></p>
-        <h2 class="text-2xl font-black leading-tight"><prop name="title" default="Untitled"></prop></h2>
-        <p class="mt-3 text-slate-700"><slot></slot></p>
-        <div class="mt-4 flex flex-wrap gap-2"><slot name="tags"></slot></div>
-        <div class="mt-5"><slot name="cta"></slot></div>
-      </article>
-    </def-post-card>
-
-    <def-tag-pill>
-      <span class="inline-flex rounded-full bg-slate-200 px-3 py-1 text-xs font-semibold text-slate-700"><slot></slot></span>
-    </def-tag-pill>
-
     <blog-shell>
       <div slot="hero">
-        <p class="text-xs uppercase tracking-[0.22em] text-indigo-100">Build-time writing</p>
-        <h1 class="mt-2 text-4xl font-black md:text-5xl">Three long-form notes on shipping a tiny HTML compiler.</h1>
-        <p class="mt-4 max-w-3xl text-indigo-50">This demo intentionally uses only HTML component tags and build-time expansion. No client-side framework, no runtime templating.</p>
+        <p class="text-xs uppercase tracking-[0.2em] text-[#70f58a]">Systems notes from the edge</p>
+        <h1 class="mt-2 max-w-5xl font-['Space_Grotesk'] text-4xl font-bold uppercase leading-tight text-[#ddffe3] md:text-5xl">Ten field reports on low-level hacking, language design, and hostile inputs.</h1>
+        <p class="mt-4 max-w-4xl text-sm leading-7 text-[#abf4b8]">Everything here is static HTML generated at build-time. The index below is assembled from page metadata, then searched and filtered client-side with tiny JavaScript.</p>
       </div>
 
-      <post-card date="February 22, 2026" title="Shipping a Tiny HTML Compiler">
-        We replaced string templates with lexical component resolution and deterministic static output. This post covers parser shape, output guarantees, and safety limits.
-        <tag-pill slot="tags">compiler</tag-pill>
-        <tag-pill slot="tags">c</tag-pill>
-        <tag-pill slot="tags">build systems</tag-pill>
-        <a slot="cta" class="inline-flex rounded-lg bg-indigo-700 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-800" href="posts/post.html">Read post</a>
-      </post-card>
+      <div slot="controls" class="grid gap-4 md:grid-cols-4">
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#82db93]">Search</span><input id="searchInput" type="search" placeholder="title, summary, tag..." class="w-full border border-[#347f44] bg-[#020502] px-3 py-2 text-sm text-[#d7ffe0] outline-none focus:border-[#79ff94] focus:ring-2 focus:ring-[#2f8c41]/70"></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#82db93]">Tag</span><select id="tagFilter" class="w-full border border-[#347f44] bg-[#020502] px-3 py-2 text-sm text-[#d7ffe0] outline-none focus:border-[#79ff94] focus:ring-2 focus:ring-[#2f8c41]/70"><option value="">All tags</option></select></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#82db93]">Category</span><select id="categoryFilter" class="w-full border border-[#347f44] bg-[#020502] px-3 py-2 text-sm text-[#d7ffe0] outline-none focus:border-[#79ff94] focus:ring-2 focus:ring-[#2f8c41]/70"><option value="">All categories</option></select></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#82db93]">Sort</span><select id="sortFilter" class="w-full border border-[#347f44] bg-[#020502] px-3 py-2 text-sm text-[#d7ffe0] outline-none focus:border-[#79ff94] focus:ring-2 focus:ring-[#2f8c41]/70"><option value="newest">Newest</option><option value="time_desc">Longest read</option><option value="time_asc">Shortest read</option><option value="title_asc">Title A-Z</option></select></label>
+      </div>
 
-      <post-card date="February 21, 2026" title="Scope Shadowing, but Friendly">
-        Local definitions override global symbols in nested scopes. The article walks through practical naming rules that keep overrides predictable for teams.
-        <tag-pill slot="tags">scoping</tag-pill>
-        <tag-pill slot="tags">language design</tag-pill>
-        <tag-pill slot="tags">html</tag-pill>
-        <a slot="cta" class="inline-flex rounded-lg bg-indigo-700 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-800" href="posts/post-scoping.html">Read post</a>
-      </post-card>
+      <div slot="results">
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <p id="resultsSummary" class="text-sm text-[#9fe6ab]">Loading posts...</p>
+          <button id="clearFilters" class="border border-[#347f44] bg-[#071107] px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#bbffc8] hover:bg-[#0b1b0b]">Clear</button>
+        </div>
 
-      <post-card date="February 20, 2026" title="Authoring UX: Keep it Boring, Keep it Fast">
-        Good DSLs disappear while you work. We discuss syntax decisions that preserve vanilla HTML feel and avoid accidental complexity.
-        <tag-pill slot="tags">ux</tag-pill>
-        <tag-pill slot="tags">authoring</tag-pill>
-        <tag-pill slot="tags">ssg</tag-pill>
-        <a slot="cta" class="inline-flex rounded-lg bg-indigo-700 px-3 py-2 text-sm font-semibold text-white hover:bg-indigo-800" href="posts/post-authoring.html">Read post</a>
-      </post-card>
+        <div id="postResults" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
 
-      <div slot="sidebar" class="space-y-6">
-        <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-          <h2 class="text-lg font-black">Series map</h2>
-          <ol class="mt-3 space-y-2 text-sm text-slate-700">
-            <li>1. Compiler architecture and guarantees</li>
-            <li>2. Lexical scoping and symbol lookup</li>
-            <li>3. Authoring ergonomics and team adoption</li>
-          </ol>
-        </section>
+        <div id="emptyState" class="hidden border border-[#2a6936] bg-[#071007] p-6 text-sm text-[#9fe6ab]">No posts match your current filters.</div>
 
-        <section class="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
-          <h2 class="text-lg font-black">Newsletter</h2>
-          <p class="mt-2 text-sm text-slate-600">One practical note every Friday on static tooling and content pipelines.</p>
-          <div class="mt-3 flex flex-wrap gap-2">
-            <tag-pill>weekly digest</tag-pill>
-            <tag-pill>ship notes</tag-pill>
-            <tag-pill>small tools</tag-pill>
+        <div class="mt-6 flex items-center justify-center gap-3">
+          <button id="prevPage" class="border border-[#347f44] bg-[#071107] px-4 py-2 text-sm font-semibold uppercase tracking-[0.1em] text-[#bfffca] hover:bg-[#0c1a0c]">Previous</button>
+          <span id="pageInfo" class="text-sm font-semibold text-[#c2ffcd]">Page 1</span>
+          <button id="nextPage" class="border border-[#347f44] bg-[#071107] px-4 py-2 text-sm font-semibold uppercase tracking-[0.1em] text-[#bfffca] hover:bg-[#0c1a0c]">Next</button>
+        </div>
+
+        <noscript>
+          <div class="mt-6 border border-[#2a6936] bg-[#071007] p-5 text-sm text-[#b4f7c1]">
+            <p class="font-semibold uppercase tracking-[0.08em]">JavaScript is disabled; interactive filters are unavailable.</p>
+            <ul class="mt-3 list-disc space-y-1 pl-5">
+              <li><a class="underline hover:text-[#d8ffe0]" href="posts/lisp-macros-with-guardrails.html">Macros With Guardrails</a></li>
+              <li><a class="underline hover:text-[#d8ffe0]" href="posts/rust-ffi-c-without-footguns.html">Rust FFI Into C</a></li>
+              <li><a class="underline hover:text-[#d8ffe0]" href="posts/c-byte-level-profiling-notes.html">C Byte-Level Profiling Notes</a></li>
+              <li><a class="underline hover:text-[#d8ffe0]" href="posts/metaprogramming-debuggable-builds.html">Metaprogramming for Debuggable Builds</a></li>
+              <li><a class="underline hover:text-[#d8ffe0]" href="posts/designing-small-dsls-for-tools.html">Small DSLs for Tooling</a></li>
+              <li><a class="underline hover:text-[#d8ffe0]" href="posts/voxel-bytepacking-for-streaming.html">Voxel Byte-Packing</a></li>
+              <li><a class="underline hover:text-[#d8ffe0]" href="posts/fuzzing-parser-attack-surface.html">Fuzzing Parser Attack Surface</a></li>
+              <li><a class="underline hover:text-[#d8ffe0]" href="posts/reversing-firmware-with-constraints.html">Reversing Firmware With Constraints</a></li>
+              <li><a class="underline hover:text-[#d8ffe0]" href="posts/binary-size-budgets-rust-c.html">Binary Size Budgets in Rust and C</a></li>
+              <li><a class="underline hover:text-[#d8ffe0]" href="posts/build-your-own-static-analyzer-pass.html">Build a Static Analyzer Pass</a></li>
+            </ul>
           </div>
-        </section>
+        </noscript>
       </div>
     </blog-shell>
   </body>

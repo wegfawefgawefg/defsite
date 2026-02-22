@@ -1,5 +1,5 @@
-#ifndef TEMPLATER_COMMON_H
-#define TEMPLATER_COMMON_H
+#ifndef DEFSITE_COMMON_H
+#define DEFSITE_COMMON_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -155,6 +155,6 @@ bool process_html_file(const char *input_path, const char *output_path, BuildCtx
 void process_directory(const char *src, const char *dst, BuildCtx *ctx);
 
 /* index.c */
-void generate_recipe_index(const char *src_dir, const char *out_json_path, BuildCtx *ctx);
+void generate_discovery_index(const char *src_dir, const char *out_json_path, BuildCtx *ctx);
 
 #endif

@@ -10,7 +10,7 @@ cd "$ROOT_DIR"
 
 ./scripts/build.sh "$SRC_DIR" "$OUT_DIR"
 
-python3 -m http.server "$PORT" --directory "$OUT_DIR" >/tmp/templater-dev-server.log 2>&1 &
+python3 -m http.server "$PORT" --directory "$OUT_DIR" >/tmp/defsite-dev-server.log 2>&1 &
 SERVER_PID=$!
 
 echo "Dev server: http://localhost:$PORT"

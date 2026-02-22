@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" data-kind="post" data-slug="designing-small-dsls-for-tools" data-title="Designing Small DSLs for Tooling" data-summary="A small DSL wins when it removes repetitive structure while preserving obvious escape hatches back to plain code." data-image="assets/images/designing-small-dsls-for-tools.jpg" data-time-min="12" data-category="language-design" data-tags="dsl,common-lisp,authoring,tooling" data-published="2026-02-18">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Designing Small DSLs for Tooling</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="min-h-screen bg-[#050805] font-['IBM_Plex_Mono'] text-[#b8ffc6]">
+    <div class="pointer-events-none fixed inset-0 opacity-35" style="background-image: linear-gradient(rgba(30, 95, 40, 0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(30, 95, 40, 0.35) 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+    <def-blog-header>
+      <header class="sticky top-0 z-20 border-b border-[#1f5f2a] bg-[#040704]/90 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <a href="../index.html" class="font-['Space_Grotesk'] text-2xl font-bold uppercase tracking-[0.12em] text-[#8dff9e]">Ami//Devlog</a>
+          <nav class="flex items-center gap-6 text-sm font-semibold uppercase tracking-[0.09em] text-[#9de8a8]">
+            <a class="hover:text-[#d8ffe0]" href="../index.html">Posts</a>
+            <a class="hover:text-[#d8ffe0]" href="../about.html">About</a>
+          </nav>
+        </div>
+      </header>
+    </def-blog-header>
+
+    <def-post-shell>
+      <blog-header></blog-header>
+      <div class="mx-auto max-w-5xl px-6 py-8 md:py-10">
+        <article class="border border-[#2b713a] bg-[#061006] p-6 md:p-10">
+          <header>
+            <p class="text-[11px] uppercase tracking-[0.17em] text-[#7cd88f]"><prop name="date"></prop> · <prop name="read" default="quick read"></prop></p>
+            <h1 class="mt-2 font-['Space_Grotesk'] text-4xl font-bold uppercase leading-tight text-[#dcffe2] md:text-5xl"><prop name="title"></prop></h1>
+            <p class="mt-4 max-w-4xl text-sm leading-7 text-[#a3ebb1]"><prop name="dek" default=""></prop></p>
+          </header>
+          <div class="mt-8 space-y-6 text-sm leading-7 text-[#b5f9c2]"><slot></slot></div>
+          <section class="mt-10 border-t border-[#215c2e] pt-5 text-sm text-[#9fe0ab]"><slot name="afterword"></slot></section>
+        </article>
+      </div>
+    </def-post-shell>
+
+    <post-shell title="Designing Small DSLs for Tooling" date="February 18, 2026" read="12 min" dek="A DSL should remove repetition while keeping normal host-language debugging and composition intact.">
+      <img src="../assets/images/designing-small-dsls-for-tools.jpg" alt="Vintage text terminal" class="w-full border border-[#2a6f3a] bg-[#081208] object-cover">
+
+      <p>Most internal DSLs fail for one reason: they try to replace the host language instead of complementing it. The result is brittle syntax, awkward error messages, and a steep onboarding curve. I design DSLs as compression layers over repetitive structure, not as alternate universes.</p>
+      <p>In practice, this means choosing a tiny core with explicit escape hatches. If users need to step outside the DSL for edge cases, they should be able to do so naturally. A DSL without escape hatches becomes a lock-in trap for its own authors.</p>
+
+      <h2 class="font-['Space_Grotesk'] text-2xl font-bold uppercase text-[#d5ffde]">Three constraints that kept our DSLs healthy</h2>
+      <ul class="list-disc space-y-2 pl-6">
+        <li>Syntax mirrors the host language where possible.</li>
+        <li>Error messages reference source terms the author actually wrote.</li>
+        <li>Generated output remains first-class and testable on its own.</li>
+      </ul>
+
+      <p>Common Lisp is excellent here because macros let you prototype syntax quickly, but the same discipline applies in Rust proc-macros or C preprocessors: keep the surface small and the emitted artifacts boring.</p>
+      <p>When done right, a DSL disappears into the workflow. Engineers think about domain intent, not parser quirks.</p>
+
+      <div slot="afterword">Next dispatch: <a class="font-semibold underline hover:text-[#deffe4]" href="voxel-bytepacking-for-streaming.html">Voxel Byte-Packing for Streaming Worlds</a>.</div>
+    </post-shell>
+  </body>
+</html>

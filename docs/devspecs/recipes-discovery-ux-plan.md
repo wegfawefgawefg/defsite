@@ -1,6 +1,6 @@
 # Recipes Discovery UX Plan (Draft)
 
-Status: draft; first prototype now exists in `demos/recipes` using root `<html data-*>` metadata + generated `search-index.json`
+Status: design-history draft from discovery prototyping. Kept for context; current implementation now emits a generic discovery index with per-entry `meta` data.
 
 ## 1. Goal
 
@@ -113,7 +113,7 @@ Example `search-index.json`:
 ]
 ```
 
-Index should contain only whitelisted fields (not every `data-*`).
+Original prototype assumption was a whitelisted index shape. Current implementation keeps common top-level fields and also includes a generic `meta` object with all root `data-*` values.
 
 ## 7. Pagination Model
 

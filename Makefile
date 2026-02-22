@@ -3,14 +3,14 @@ CFLAGS ?= -std=c11 -O2 -Wall -Wextra -pedantic
 LDFLAGS ?=
 
 BIN_DIR := bin
-TARGET := $(BIN_DIR)/templater
+TARGET := $(BIN_DIR)/defsite
 SRC := \
 	src/main.c \
-	src/templater/util.c \
-	src/templater/dom.c \
-	src/templater/parser.c \
-	src/templater/engine.c \
-	src/templater/index.c
+	src/defsite/util.c \
+	src/defsite/dom.c \
+	src/defsite/parser.c \
+	src/defsite/engine.c \
+	src/defsite/index.c
 
 .PHONY: all build run demos dev test clean
 
@@ -18,7 +18,7 @@ all: build
 
 build: $(TARGET)
 
-$(TARGET): $(SRC) src/templater/common.h
+$(TARGET): $(SRC) src/defsite/common.h
 	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) $(SRC) -o $(TARGET) $(LDFLAGS)
 

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BIN="$ROOT_DIR/bin/templater"
+BIN="$ROOT_DIR/bin/defsite"
 TMP_ROOT="$ROOT_DIR/.tmp-test-out-$$"
 mkdir -p "$TMP_ROOT"
 cleanup() {

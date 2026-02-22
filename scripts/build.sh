@@ -9,6 +9,6 @@ cd "$ROOT_DIR"
 make build
 mkdir -p "$OUT_DIR"
 find "$OUT_DIR" -mindepth 1 -delete
-./bin/templater "$SRC_DIR" "$OUT_DIR"
+./bin/defsite "$SRC_DIR" "$OUT_DIR"
 
 echo "Built site: $SRC_DIR -> $OUT_DIR"

@@ -1,6 +1,6 @@
 # Spec Compliance Checklist (v1)
 
-Tracks `docs/component-spec.md` requirements against automated fixtures.
+Tracks `docs/devspecs/component-spec.md` requirements against automated fixtures.
 
 ## Coverage Matrix
 

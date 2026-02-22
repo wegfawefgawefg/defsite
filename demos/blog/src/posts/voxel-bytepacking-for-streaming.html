@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en" data-kind="post" data-slug="voxel-bytepacking-for-streaming" data-title="Voxel Byte-Packing for Streaming Worlds" data-summary="Packing voxel chunks is mostly a data-model problem: choose stable bit layouts, cheap decoding, and incremental updates." data-image="assets/images/voxel-bytepacking-for-streaming.jpg" data-time-min="9" data-category="graphics" data-tags="voxel,bytepacking,streaming,compression" data-published="2026-02-17">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Voxel Byte-Packing for Streaming Worlds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="min-h-screen bg-[#050805] font-['IBM_Plex_Mono'] text-[#b8ffc6]">
+    <div class="pointer-events-none fixed inset-0 opacity-35" style="background-image: linear-gradient(rgba(30, 95, 40, 0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(30, 95, 40, 0.35) 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+    <def-blog-header>
+      <header class="sticky top-0 z-20 border-b border-[#1f5f2a] bg-[#040704]/90 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <a href="../index.html" class="font-['Space_Grotesk'] text-2xl font-bold uppercase tracking-[0.12em] text-[#8dff9e]">Ami//Devlog</a>
+          <nav class="flex items-center gap-6 text-sm font-semibold uppercase tracking-[0.09em] text-[#9de8a8]">
+            <a class="hover:text-[#d8ffe0]" href="../index.html">Posts</a>
+            <a class="hover:text-[#d8ffe0]" href="../about.html">About</a>
+          </nav>
+        </div>
+      </header>
+    </def-blog-header>
+
+    <def-post-shell>
+      <blog-header></blog-header>
+      <div class="mx-auto max-w-5xl px-6 py-8 md:py-10">
+        <article class="border border-[#2b713a] bg-[#061006] p-6 md:p-10">
+          <header>
+            <p class="text-[11px] uppercase tracking-[0.17em] text-[#7cd88f]"><prop name="date"></prop> · <prop name="read" default="quick read"></prop></p>
+            <h1 class="mt-2 font-['Space_Grotesk'] text-4xl font-bold uppercase leading-tight text-[#dcffe2] md:text-5xl"><prop name="title"></prop></h1>
+            <p class="mt-4 max-w-4xl text-sm leading-7 text-[#a3ebb1]"><prop name="dek" default=""></prop></p>
+          </header>
+          <div class="mt-8 space-y-6 text-sm leading-7 text-[#b5f9c2]"><slot></slot></div>
+          <section class="mt-10 border-t border-[#215c2e] pt-5 text-sm text-[#9fe0ab]"><slot name="afterword"></slot></section>
+        </article>
+      </div>
+    </def-post-shell>
+
+    <post-shell title="Voxel Byte-Packing for Streaming Worlds" date="February 17, 2026" read="9 min" dek="Smooth chunk streaming comes from predictable memory layouts and incremental transfer formats, not from massive compression tricks.">
+      <img src="../assets/images/voxel-bytepacking-for-streaming.jpg" alt="Voxel art example" class="w-full border border-[#2a6f3a] bg-[#081208] object-cover">
+
+      <p>Voxel engines fail gracefully only when the storage model is honest about access patterns. If chunk decode requires random indirection and branching, camera movement turns into hitching. I prefer a constrained byte format with fixed headers and compact run-length sections for common materials.</p>
+      <p>The key is decoding cost predictability. It is better to store slightly more bytes and decode linearly than to save space with bit gymnastics that branch every few bits. GPUs and CPUs both reward regularity.</p>
+
+      <h2 class="font-['Space_Grotesk'] text-2xl font-bold uppercase text-[#d5ffde]">Packing decisions that aged well</h2>
+      <ul class="list-disc space-y-2 pl-6">
+        <li>Palette-local IDs per chunk for short symbol widths.</li>
+        <li>Run-length blocks for long material spans.</li>
+        <li>Versioned headers so format migration is explicit.</li>
+        <li>Chunk hashes for cheap cache validation.</li>
+      </ul>
+
+      <p>When data format and transport format are aligned, streaming logic becomes simpler: request chunk, verify hash, decode linearly, submit mesh update. The pipeline remains understandable even as world size grows.</p>
+
+      <div slot="afterword">Next dispatch: <a class="font-semibold underline hover:text-[#deffe4]" href="fuzzing-parser-attack-surface.html">Fuzzing Parser Attack Surface</a>.</div>
+    </post-shell>
+  </body>
+</html>

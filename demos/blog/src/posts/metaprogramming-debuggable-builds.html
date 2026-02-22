@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en" data-kind="post" data-slug="metaprogramming-debuggable-builds" data-title="Metaprogramming for Debuggable Builds" data-summary="Code generation is only a productivity win if generated output is stable, readable, and easy to trace back to source." data-image="assets/images/metaprogramming-debuggable-builds.jpg" data-time-min="10" data-category="metaprogramming" data-tags="metaprogramming,build,debugging,codegen" data-published="2026-02-19">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Metaprogramming for Debuggable Builds</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  </head>
+  <body class="min-h-screen bg-[#050805] font-['IBM_Plex_Mono'] text-[#b8ffc6]">
+    <div class="pointer-events-none fixed inset-0 opacity-35" style="background-image: linear-gradient(rgba(30, 95, 40, 0.35) 1px, transparent 1px), linear-gradient(90deg, rgba(30, 95, 40, 0.35) 1px, transparent 1px); background-size: 30px 30px;"></div>
+
+    <def-blog-header>
+      <header class="sticky top-0 z-20 border-b border-[#1f5f2a] bg-[#040704]/90 backdrop-blur">
+        <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+          <a href="../index.html" class="font-['Space_Grotesk'] text-2xl font-bold uppercase tracking-[0.12em] text-[#8dff9e]">Ami//Devlog</a>
+          <nav class="flex items-center gap-6 text-sm font-semibold uppercase tracking-[0.09em] text-[#9de8a8]">
+            <a class="hover:text-[#d8ffe0]" href="../index.html">Posts</a>
+            <a class="hover:text-[#d8ffe0]" href="../about.html">About</a>
+          </nav>
+        </div>
+      </header>
+    </def-blog-header>
+
+    <def-post-shell>
+      <blog-header></blog-header>
+      <div class="mx-auto max-w-5xl px-6 py-8 md:py-10">
+        <article class="border border-[#2b713a] bg-[#061006] p-6 md:p-10">
+          <header>
+            <p class="text-[11px] uppercase tracking-[0.17em] text-[#7cd88f]"><prop name="date"></prop> · <prop name="read" default="quick read"></prop></p>
+            <h1 class="mt-2 font-['Space_Grotesk'] text-4xl font-bold uppercase leading-tight text-[#dcffe2] md:text-5xl"><prop name="title"></prop></h1>
+            <p class="mt-4 max-w-4xl text-sm leading-7 text-[#a3ebb1]"><prop name="dek" default=""></prop></p>
+          </header>
+          <div class="mt-8 space-y-6 text-sm leading-7 text-[#b5f9c2]"><slot></slot></div>
+          <section class="mt-10 border-t border-[#215c2e] pt-5 text-sm text-[#9fe0ab]"><slot name="afterword"></slot></section>
+        </article>
+      </div>
+    </def-post-shell>
+
+    <def-callout>
+      <aside class="border border-[#2f8742] bg-[#081408] p-4 text-[#b9ffca]">
+        <p class="text-xs font-semibold uppercase tracking-[0.12em] text-[#7ae88f]"><prop name="title" default="Field note"></prop></p>
+        <p class="mt-2 text-sm leading-7"><slot></slot></p>
+      </aside>
+    </def-callout>
+
+    <post-shell title="Metaprogramming for Debuggable Builds" date="February 19, 2026" read="10 min" dek="Generators should reduce toil, not erase observability. If generated code is opaque, incidents take longer and trust drops.">
+      <img src="../assets/images/metaprogramming-debuggable-builds.jpg" alt="Vintage Apple II computer" class="w-full border border-[#2a6f3a] bg-[#081208] object-cover">
+
+      <p>Code generation can remove repetition, but it can also hide intent. The worst generator outputs are unstable and difficult to diff; every rebuild rewrites lines, and every review becomes noise. I only keep generators that produce deterministic output with stable ordering and predictable formatting.</p>
+      <p>A second requirement is traceability. When a generated branch misbehaves, engineers need to map output back to source templates quickly. That means embedding source hints, preserving section boundaries, and documenting generation passes as if they were a compiler pipeline.</p>
+
+      <callout title="Debug-first design">
+        Before writing a generator, decide how you will debug failures in production. If that path is unclear, the generator design is incomplete.
+      </callout>
+
+      <h2 class="font-['Space_Grotesk'] text-2xl font-bold uppercase text-[#d5ffde]">What made our generators maintainable</h2>
+      <ul class="list-disc space-y-2 pl-6">
+        <li>Stable sort order for all emitted symbols.</li>
+        <li>One generator pass per concern, rather than monolithic transforms.</li>
+        <li>Fixture tests on generated files, not just source templates.</li>
+        <li>Human-readable error output with source file references.</li>
+      </ul>
+
+      <p>With those constraints, metaprogramming behaves more like a build tool and less like wizardry. That is the right tradeoff for teams who care about velocity over novelty.</p>
+
+      <div slot="afterword">Next dispatch: <a class="font-semibold underline hover:text-[#deffe4]" href="designing-small-dsls-for-tools.html">Designing Small DSLs for Tooling</a>.</div>
+    </post-shell>
+  </body>
+</html>
