@@ -3,20 +3,23 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Weeknight Recipes</title>
+    <title>AmisRecipes</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="recipes-search.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&family=Noto+Serif+JP:wght@500;700;900&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-amber-50 text-stone-900">
+  <body class="bg-stone-100 font-['Noto_Sans_JP'] text-stone-900">
     <def-recipe-header>
-      <header class="border-b border-stone-200 bg-white/90 backdrop-blur">
+      <header class="border-b border-stone-300/70 bg-white/90 backdrop-blur">
         <div class="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <a href="index.html" class="text-xl font-black">Weeknight Recipes</a>
+          <a href="index.html" class="font-['Noto_Serif_JP'] text-2xl font-black tracking-tight">AmisRecipes</a>
           <nav class="flex items-center gap-5 text-sm font-semibold text-stone-600">
-            <a class="hover:text-orange-700" href="index.html">Recipes</a>
-            <a class="hover:text-orange-700" href="about.html">About</a>
-            <a class="hover:text-orange-700" href="book.html">Book</a>
-            <a class="hover:text-orange-700" href="contact.html">Contact</a>
+            <a class="hover:text-rose-700" href="index.html">Recipes</a>
+            <a class="hover:text-rose-700" href="about.html">About</a>
+            <a class="hover:text-rose-700" href="book.html">Book</a>
+            <a class="hover:text-rose-700" href="contact.html">Contact</a>
           </nav>
         </div>
       </header>
@@ -25,11 +28,12 @@
     <def-recipe-shell>
       <recipe-header></recipe-header>
       <div class="mx-auto max-w-6xl p-6 md:p-10">
-        <header class="mb-6 rounded-3xl bg-gradient-to-r from-amber-200 via-orange-200 to-rose-200 p-8 shadow-sm">
-          <slot name="hero"></slot>
+        <header class="relative mb-6 overflow-hidden rounded-3xl border border-stone-300/60 bg-gradient-to-br from-stone-50 via-rose-50 to-stone-100 p-8 shadow-sm">
+          <div class="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(120,113,108,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(120,113,108,0.08)_1px,transparent_1px)] bg-[size:36px_36px]"></div>
+          <div class="relative"><slot name="hero"></slot></div>
         </header>
 
-        <section class="mb-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-stone-200">
+        <section class="mb-6 rounded-2xl border border-stone-300/60 bg-white p-5 shadow-sm">
           <slot name="controls"></slot>
         </section>
 
@@ -41,53 +45,27 @@
 
     <recipe-shell>
       <div slot="hero">
-        <p class="text-xs uppercase tracking-[0.22em] text-stone-700">Kitchen demo</p>
-        <h1 class="mt-2 text-4xl font-black md:text-5xl">Recipe index with search, filters, and pagination.</h1>
-        <p class="mt-3 max-w-3xl text-stone-700">Cards below are generated at runtime from a build-generated <code>search-index.json</code> sourced from recipe page <code>data-*</code> metadata.</p>
+        <p class="text-xs uppercase tracking-[0.22em] text-rose-700">Contemporary Japanese home cooking</p>
+        <h1 class="mt-2 font-['Noto_Serif_JP'] text-4xl font-black md:text-5xl">Ten weeknight-friendly Japanese dishes.</h1>
+        <p class="mt-3 max-w-3xl text-stone-700">This index is generated from metadata on each recipe page. Search, filter, and paginate without manually curating card markup.</p>
       </div>
 
       <div slot="controls" class="grid gap-4 md:grid-cols-4">
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Search</span>
-          <input id="searchInput" type="search" placeholder="Find by title or summary" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200">
-        </label>
-
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Diet</span>
-          <select id="dietFilter" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200">
-            <option value="">All diets</option>
-          </select>
-        </label>
-
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Method</span>
-          <select id="methodFilter" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200">
-            <option value="">All methods</option>
-          </select>
-        </label>
-
-        <label class="block">
-          <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Sort</span>
-          <select id="sortFilter" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200">
-            <option value="newest">Newest</option>
-            <option value="time_asc">Time: fastest</option>
-            <option value="time_desc">Time: longest</option>
-            <option value="title_asc">Title: A-Z</option>
-          </select>
-        </label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Search</span><input id="searchInput" type="search" placeholder="Dish name, style, summary..." class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-200"></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Diet</span><select id="dietFilter" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-200"><option value="">All diets</option></select></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Method</span><select id="methodFilter" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-200"><option value="">All methods</option></select></label>
+        <label class="block"><span class="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Sort</span><select id="sortFilter" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-rose-500 focus:ring-2 focus:ring-rose-200"><option value="newest">Newest</option><option value="time_asc">Time: fastest</option><option value="time_desc">Time: longest</option><option value="title_asc">Title: A-Z</option></select></label>
       </div>
 
       <div slot="results">
         <div class="mb-4 flex items-center justify-between gap-3">
           <p id="resultsSummary" class="text-sm text-stone-600">Loading recipes...</p>
-          <button id="clearFilters" class="rounded-lg bg-stone-200 px-3 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-300">Clear filters</button>
+          <button id="clearFilters" class="rounded-lg border border-stone-300 bg-stone-200 px-3 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-300">Clear filters</button>
         </div>
 
         <div id="recipeResults" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
 
-        <div id="emptyState" class="hidden rounded-2xl bg-white p-6 text-sm text-stone-600 shadow-sm ring-1 ring-stone-200">
-          No recipes match your current filters.
-        </div>
+        <div id="emptyState" class="hidden rounded-2xl border border-stone-300/60 bg-white p-6 text-sm text-stone-600 shadow-sm">No recipes match your current filters.</div>
 
         <div class="mt-6 flex items-center justify-center gap-3">
           <button id="prevPage" class="rounded-lg bg-stone-900 px-4 py-2 text-sm font-semibold text-stone-50 hover:bg-stone-700">Previous</button>
@@ -96,14 +74,19 @@
         </div>
 
         <noscript>
-          <div class="mt-6 rounded-2xl bg-white p-5 text-sm text-stone-700 shadow-sm ring-1 ring-stone-200">
-            <p class="font-semibold">JavaScript is off, so search and filters are unavailable.</p>
+          <div class="mt-6 rounded-2xl border border-stone-300/60 bg-white p-5 text-sm text-stone-700 shadow-sm">
+            <p class="font-semibold">JavaScript is disabled, so interactive filters are unavailable.</p>
             <ul class="mt-3 list-disc space-y-1 pl-5">
-              <li><a class="text-orange-700 underline" href="recipes/chili.html">Smoky Bean Chili</a></li>
-              <li><a class="text-orange-700 underline" href="recipes/lemon-garlic-pasta.html">Lemon Garlic Pasta</a></li>
-              <li><a class="text-orange-700 underline" href="recipes/crispy-tofu-bowls.html">Crispy Tofu Bowls</a></li>
-              <li><a class="text-orange-700 underline" href="recipes/sheet-pan-harissa-chicken.html">Sheet Pan Harissa Chicken</a></li>
-              <li><a class="text-orange-700 underline" href="recipes/coconut-lentil-soup.html">Coconut Lentil Soup</a></li>
+              <li><a class="text-rose-700 underline" href="recipes/oyakodon.html">Oyakodon</a></li>
+              <li><a class="text-rose-700 underline" href="recipes/japanese-curry-rice.html">Japanese Curry Rice</a></li>
+              <li><a class="text-rose-700 underline" href="recipes/nikujaga.html">Nikujaga</a></li>
+              <li><a class="text-rose-700 underline" href="recipes/okonomiyaki.html">Okonomiyaki</a></li>
+              <li><a class="text-rose-700 underline" href="recipes/onigiri.html">Onigiri Three Ways</a></li>
+              <li><a class="text-rose-700 underline" href="recipes/zaru-soba.html">Zaru Soba</a></li>
+              <li><a class="text-rose-700 underline" href="recipes/kitsune-udon.html">Kitsune Udon</a></li>
+              <li><a class="text-rose-700 underline" href="recipes/tonkatsu-cabbage.html">Tonkatsu with Cabbage</a></li>
+              <li><a class="text-rose-700 underline" href="recipes/miso-soup-tofu.html">Miso Soup with Tofu</a></li>
+              <li><a class="text-rose-700 underline" href="recipes/tamagoyaki-bento.html">Tamagoyaki for Bento</a></li>
             </ul>
           </div>
         </noscript>

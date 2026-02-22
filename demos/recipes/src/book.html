@@ -1,51 +1,24 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>The Weeknight Blueprint - Book</title>
+    <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Book - AmisRecipes</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;700&family=Noto+Serif+JP:wght@500;700;900&display=swap" rel="stylesheet">
   </head>
-  <body class="bg-amber-50 text-stone-900">
-    <def-recipe-header>
-      <header class="border-b border-stone-200 bg-white/90 backdrop-blur">
-        <div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <a href="index.html" class="text-xl font-black">Weeknight Recipes</a>
-          <nav class="flex items-center gap-5 text-sm font-semibold text-stone-600">
-            <a class="hover:text-orange-700" href="index.html">Recipes</a>
-            <a class="hover:text-orange-700" href="about.html">About</a>
-            <a class="hover:text-orange-700" href="book.html">Book</a>
-            <a class="hover:text-orange-700" href="contact.html">Contact</a>
-          </nav>
-        </div>
-      </header>
-    </def-recipe-header>
-
-    <def-page-shell>
-      <recipe-header></recipe-header>
-      <main class="mx-auto max-w-4xl p-6 md:p-10">
-        <section class="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200 md:p-8">
-          <slot></slot>
-        </section>
-      </main>
-    </def-page-shell>
-
-    <page-shell>
-      <p class="text-xs uppercase tracking-[0.2em] text-orange-700">Book</p>
-      <h1 class="mt-2 text-4xl font-black">The Weeknight Blueprint</h1>
-      <p class="mt-5 text-stone-700">A practical cookbook built around repeatable systems: one-pan meals, soup formulas, and freezer strategies for high-friction weeks.</p>
-
-      <h2 class="mt-8 text-2xl font-black">Inside the book</h2>
-      <ul class="mt-3 list-disc space-y-2 pl-6 text-stone-700">
-        <li>75 core recipes with prep-time tiers (15, 30, 45 minutes)</li>
-        <li>12 modular sauces and spice bases</li>
-        <li>Batch-cooking plans for 2 and 5-day schedules</li>
-        <li>Shopping templates organized by store section</li>
-      </ul>
-
-      <div class="mt-8 rounded-xl bg-orange-100 p-4 text-sm text-orange-900">
-        Preorders open soon. Join the newsletter from the contact page for launch updates.
-      </div>
-    </page-shell>
+  <body class="bg-stone-100 font-['Noto_Sans_JP'] text-stone-900">
+    <def-recipe-header><header class="border-b border-stone-300/70 bg-white/90 backdrop-blur"><div class="mx-auto flex max-w-5xl items-center justify-between px-6 py-4"><a href="index.html" class="font-['Noto_Serif_JP'] text-2xl font-black tracking-tight">AmisRecipes</a><nav class="flex items-center gap-5 text-sm font-semibold text-stone-600"><a class="hover:text-rose-700" href="index.html">Recipes</a><a class="hover:text-rose-700" href="about.html">About</a><a class="hover:text-rose-700" href="book.html">Book</a><a class="hover:text-rose-700" href="contact.html">Contact</a></nav></div></header></def-recipe-header>
+    <recipe-header></recipe-header>
+    <main class="mx-auto max-w-4xl p-6 md:p-10">
+      <section class="rounded-2xl border border-stone-300/60 bg-white p-6 shadow-sm md:p-8">
+        <p class="text-xs uppercase tracking-[0.2em] text-rose-700">Book</p>
+        <h1 class="mt-2 font-['Noto_Serif_JP'] text-4xl font-black">AmisRecipes: Weeknight Japanese Table</h1>
+        <p class="mt-5 text-stone-700">A practical cookbook of 90 home-style Japanese recipes organized by cooking rhythm: 15-minute bowls, 30-minute classics, and make-ahead sides.</p>
+        <h2 class="mt-8 font-['Noto_Serif_JP'] text-2xl font-bold">Inside</h2>
+        <ul class="mt-3 list-disc space-y-2 pl-6 text-stone-700"><li>Technique chapters: dashi, seasoning balance, rice texture</li><li>Weeknight menus built from shared ingredients</li><li>Bento-oriented prep and leftovers strategy</li><li>Pantry guide for Japanese staples</li></ul>
+        <div class="mt-8 rounded-xl bg-rose-50 p-4 text-sm text-rose-900">Prototype note: this page is part of the static demo and not a live preorder system.</div>
+      </section>
+    </main>
   </body>
 </html>

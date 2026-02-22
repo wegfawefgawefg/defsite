@@ -13,6 +13,7 @@ typedef struct {
     char *url;
     char *title;
     char *summary;
+    char *image;
     int time_min;
     bool has_time_min;
     char *serves;
@@ -38,6 +39,7 @@ static void recipe_record_free(RecipeRecord *r) {
     free(r->url);
     free(r->title);
     free(r->summary);
+    free(r->image);
     free(r->serves);
     free(r->difficulty);
     for (size_t i = 0; i < r->diet_count; i++) {
@@ -223,6 +225,7 @@ static void collect_recipe_from_file(const char *src_dir, const char *file_path,
     rec->url = rel;
     rec->title = xstrdup(attr_or_empty(html, "data-title"));
     rec->summary = xstrdup(attr_or_empty(html, "data-summary"));
+    rec->image = xstrdup(attr_or_empty(html, "data-image"));
     rec->serves = xstrdup(attr_or_empty(html, "data-serves"));
     rec->difficulty = xstrdup(attr_or_empty(html, "data-difficulty"));
     rec->method = xstrdup(attr_or_empty(html, "data-method"));
@@ -308,6 +311,7 @@ static void serialize_recipe_json(StrBuf *b, const RecipeRecord *r) {
     sb_append(b, "    \"url\": "); json_append_escaped(b, r->url); sb_append(b, ",\n");
     sb_append(b, "    \"title\": "); json_append_escaped(b, r->title); sb_append(b, ",\n");
     sb_append(b, "    \"summary\": "); json_append_escaped(b, r->summary); sb_append(b, ",\n");
+    sb_append(b, "    \"image\": "); json_append_escaped(b, r->image); sb_append(b, ",\n");
     sb_append(b, "    \"time_min\": ");
     if (r->has_time_min) {
         char num[32];

@@ -1,5 +1,5 @@
 (function () {
-  const PAGE_SIZE = 4;
+  const PAGE_SIZE = 6;
 
   const state = {
     allItems: [],
@@ -158,13 +158,20 @@
       metaBits.push(`serves ${escapeHtml(item.serves)}`);
     }
 
+    const imageHtml = item.image
+      ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title || "Recipe image")}" class="h-44 w-full object-cover">`
+      : `<div class="h-44 w-full bg-stone-200"></div>`;
+
     return `
-      <article class="flex h-full flex-col rounded-2xl bg-white p-5 shadow-sm ring-1 ring-stone-200">
-        <p class="text-xs uppercase tracking-[0.17em] text-stone-500">${metaBits.join(" · ")}</p>
-        <h2 class="mt-2 text-2xl font-black leading-tight">${escapeHtml(item.title || "Untitled")}</h2>
-        <p class="mt-2 text-sm text-stone-600">${escapeHtml(item.summary || "")}</p>
-        <div class="mt-4 flex flex-wrap gap-2">${chips}</div>
-        <a href="${escapeHtml(item.url || "#")}" class="mt-5 inline-flex w-max rounded-lg bg-stone-900 px-3 py-2 text-sm font-semibold text-stone-50 hover:bg-stone-700">Open recipe</a>
+      <article class="overflow-hidden rounded-2xl border border-stone-300/60 bg-white shadow-sm">
+        ${imageHtml}
+        <div class="p-5">
+          <p class="text-xs uppercase tracking-[0.17em] text-stone-500">${metaBits.join(" · ")}</p>
+          <h2 class="mt-2 font-['Noto_Serif_JP'] text-2xl font-black leading-tight">${escapeHtml(item.title || "Untitled")}</h2>
+          <p class="mt-2 text-sm text-stone-600">${escapeHtml(item.summary || "")}</p>
+          <div class="mt-4 flex flex-wrap gap-2">${chips}</div>
+          <a href="${escapeHtml(item.url || "#")}" class="mt-5 inline-flex w-max rounded-lg bg-stone-900 px-3 py-2 text-sm font-semibold text-stone-50 hover:bg-stone-700">Open recipe</a>
+        </div>
       </article>
     `;
   }
