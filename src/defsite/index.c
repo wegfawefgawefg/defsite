@@ -131,7 +131,8 @@ static void record_meta_set(DiscoveryRecord *rec, const char *key, const char *v
     rec->meta_count++;
 }
 
-static void collect_meta_from_html_attrs(DiscoveryRecord *rec, const Node *html) {
+static size_t collect_meta_from_html_attrs(DiscoveryRecord *rec, const Node *html) {
+    size_t count = 0;
     for (size_t i = 0; i < html->attr_count; i++) {
         const Attr *a = &html->attrs[i];
         if (!a->name || !starts_with(a->name, "data-")) {
@@ -144,7 +145,9 @@ static void collect_meta_from_html_attrs(DiscoveryRecord *rec, const Node *html)
         }
 
         record_meta_set(rec, key, a->value ? a->value : "");
+        count++;
     }
+    return count;
 }
 
 static void collect_entry_from_file(const char *src_dir, const char *file_path, DiscoveryList *list, BuildCtx *ctx) {
@@ -166,23 +169,24 @@ static void collect_entry_from_file(const char *src_dir, const char *file_path, 
         return;
     }
 
-    const char *kind = node_get_attr(html, "data-kind");
-    if (!kind || !kind[0]) {
+    char *rel = path_relative_to(file_path, src_dir);
+    DiscoveryRecord rec = {0};
+    rec.url = rel;
+    size_t meta_count = collect_meta_from_html_attrs(&rec, html);
+    if (meta_count == 0) {
+        record_free(&rec);
         node_free(doc);
         ctx->current_file = prev_file;
         return;
     }
 
-    char *rel = path_relative_to(file_path, src_dir);
-
-    DiscoveryRecord *rec = list_push(list);
-    rec->url = rel;
-    collect_meta_from_html_attrs(rec, html);
-
-    const char *published = record_meta_get(rec, "published");
+    const char *published = record_meta_get(&rec, "published");
     if (published[0] && !is_date_format(published)) {
         log_warning(ctx, "metadata invalid data-published format in %s (expected YYYY-MM-DD)", rel);
     }
+
+    DiscoveryRecord *dst = list_push(list);
+    *dst = rec;
 
     node_free(doc);
     ctx->current_file = prev_file;
@@ -223,16 +227,6 @@ static void scan_dir_recursive(const char *src_dir, const char *dir_path, Discov
 static int record_cmp(const void *a, const void *b) {
     const DiscoveryRecord *ra = (const DiscoveryRecord *)a;
     const DiscoveryRecord *rb = (const DiscoveryRecord *)b;
-    int p = strcmp(record_meta_get(rb, "published"), record_meta_get(ra, "published"));
-    if (p != 0) {
-        return p;
-    }
-
-    p = strcmp(record_meta_get(ra, "title"), record_meta_get(rb, "title"));
-    if (p != 0) {
-        return p;
-    }
-
     return strcmp(ra->url ? ra->url : "", rb->url ? rb->url : "");
 }
 
@@ -287,19 +281,17 @@ static void serialize_record_json(StrBuf *b, const DiscoveryRecord *r) {
 
 static void warn_duplicate_slugs(const DiscoveryList *list, BuildCtx *ctx) {
     for (size_t i = 0; i < list->count; i++) {
-        const char *kind_i = record_meta_get(&list->items[i], "kind");
         const char *slug_i = record_meta_get(&list->items[i], "slug");
 
-        if (!kind_i[0] || !slug_i[0]) {
+        if (!slug_i[0]) {
             continue;
         }
 
         for (size_t j = i + 1; j < list->count; j++) {
-            const char *kind_j = record_meta_get(&list->items[j], "kind");
             const char *slug_j = record_meta_get(&list->items[j], "slug");
 
-            if (str_eq(kind_i, kind_j) && str_eq(slug_i, slug_j)) {
-                log_warning(ctx, "duplicate metadata slug '%s' for kind '%s'", slug_i, kind_i);
+            if (str_eq(slug_i, slug_j)) {
+                log_warning(ctx, "duplicate metadata slug '%s' in discovery index", slug_i);
             }
         }
     }

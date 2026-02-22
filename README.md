@@ -79,6 +79,42 @@ Build:
 
 Output: plain expanded HTML with `def-*` removed.
 
+## Mini Tutorial
+
+This example shows all core language features in one place:
+- `def-*` definition
+- component invocation
+- `<bind>` text binding
+- `bind-*` attribute binding
+- default slot + named slot
+
+```html
+<!doctype html>
+<html>
+  <body>
+    <def-card-link>
+      <article class="card">
+        <h2><bind name="title" default="Untitled"></bind></h2>
+        <a class="cta" bind-href="href" bind-aria-label="title">Open</a>
+        <section><slot></slot></section>
+        <footer><slot name="meta"></slot></footer>
+      </article>
+    </def-card-link>
+
+    <card-link title="Rust FFI Notes" href="/posts/rust-ffi-c.html">
+      <p>Ownership rules at the boundary are part of your ABI contract.</p>
+      <small slot="meta">11 min read</small>
+    </card-link>
+  </body>
+</html>
+```
+
+Rules:
+- `<bind name="x">` reads invocation attribute `x` as escaped text.
+- `bind-target="x"` sets output attribute `target` from invocation attribute `x`.
+- `<slot>` receives unnamed children.
+- `<slot name="meta">` receives children with `slot="meta"`.
+
 ## Component Features
 
 - `def-*` component definitions inline in HTML.
@@ -91,12 +127,16 @@ Output: plain expanded HTML with `def-*` removed.
 
 ## Discovery Indexing
 
-If a page root contains `data-*` metadata (on `<html ...>`), DefSite emits `search-index.json`.
+DefSite includes a page in `search-index.json` when the root `<html>` has at least one `data-*` attribute.
+
+No metadata keys are required by the engine; schema is site-defined.
 
 Each record includes:
 
 - `url`: the generated page path
 - `meta`: all root `data-*` fields (without the `data-` prefix), as strings
+
+Records are sorted by `url` for deterministic output.
 
 This supports site-specific search/filter UI logic without custom per-site indexer code.
 
