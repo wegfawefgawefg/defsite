@@ -1,0 +1,4 @@
+Agent Project Notes
+
+- C source files should stay between 3 and 500 lines each.
+- Prefer splitting modules by responsibility instead of growing monolith files.

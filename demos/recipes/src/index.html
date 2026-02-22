@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Weeknight Recipes</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="recipes-search.js" defer></script>
   </head>
   <body class="bg-amber-50 text-stone-900">
     <def-recipe-header>
@@ -24,68 +25,89 @@
     <def-recipe-shell>
       <recipe-header></recipe-header>
       <div class="mx-auto max-w-6xl p-6 md:p-10">
-        <header class="mb-8 rounded-3xl bg-gradient-to-r from-amber-200 via-orange-200 to-rose-200 p-8 shadow-sm">
+        <header class="mb-6 rounded-3xl bg-gradient-to-r from-amber-200 via-orange-200 to-rose-200 p-8 shadow-sm">
           <slot name="hero"></slot>
         </header>
-        <main class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"><slot></slot></main>
+
+        <section class="mb-6 rounded-2xl bg-white p-5 shadow-sm ring-1 ring-stone-200">
+          <slot name="controls"></slot>
+        </section>
+
+        <section>
+          <slot name="results"></slot>
+        </section>
       </div>
     </def-recipe-shell>
-
-    <def-recipe-card>
-      <article class="flex h-full flex-col rounded-2xl bg-white p-5 shadow-sm ring-1 ring-stone-200">
-        <p class="text-xs uppercase tracking-[0.17em] text-stone-500"><prop name="time" default="n/a"></prop></p>
-        <h2 class="mt-2 text-2xl font-black leading-tight"><prop name="title" default="Untitled"></prop></h2>
-        <p class="mt-2 text-sm text-stone-600"><slot></slot></p>
-        <div class="mt-4 flex flex-wrap gap-2"><slot name="stats"></slot></div>
-        <div class="mt-5"><slot name="cta"></slot></div>
-      </article>
-    </def-recipe-card>
-
-    <def-stat-chip>
-      <span class="inline-flex rounded-full bg-stone-200 px-3 py-1 text-xs font-semibold text-stone-700"><slot></slot></span>
-    </def-stat-chip>
 
     <recipe-shell>
       <div slot="hero">
         <p class="text-xs uppercase tracking-[0.22em] text-stone-700">Kitchen demo</p>
-        <h1 class="mt-2 text-4xl font-black md:text-5xl">Five practical recipes for fast weeknights.</h1>
-        <p class="mt-3 max-w-2xl text-stone-700">Every page here is generated from HTML-only component tags. No runtime framework required.</p>
+        <h1 class="mt-2 text-4xl font-black md:text-5xl">Recipe index with search, filters, and pagination.</h1>
+        <p class="mt-3 max-w-3xl text-stone-700">Cards below are generated at runtime from a build-generated <code>search-index.json</code> sourced from recipe page <code>data-*</code> metadata.</p>
       </div>
 
-      <recipe-card title="Smoky Bean Chili" time="35 min">
-        Fast pantry chili with beans, tomato, cumin, and a little dark chocolate.
-        <stat-chip slot="stats">vegan</stat-chip>
-        <stat-chip slot="stats">high protein</stat-chip>
-        <a slot="cta" href="recipes/chili.html" class="inline-flex w-max rounded-lg bg-stone-900 px-3 py-2 text-sm font-semibold text-stone-50 hover:bg-stone-700">Open recipe</a>
-      </recipe-card>
+      <div slot="controls" class="grid gap-4 md:grid-cols-4">
+        <label class="block">
+          <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Search</span>
+          <input id="searchInput" type="search" placeholder="Find by title or summary" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200">
+        </label>
 
-      <recipe-card title="Lemon Garlic Pasta" time="20 min">
-        Olive oil, lemon zest, garlic, parsley, and toasted breadcrumbs.
-        <stat-chip slot="stats">vegetarian</stat-chip>
-        <stat-chip slot="stats">one pan</stat-chip>
-        <a slot="cta" href="recipes/lemon-garlic-pasta.html" class="inline-flex w-max rounded-lg bg-stone-900 px-3 py-2 text-sm font-semibold text-stone-50 hover:bg-stone-700">Open recipe</a>
-      </recipe-card>
+        <label class="block">
+          <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Diet</span>
+          <select id="dietFilter" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200">
+            <option value="">All diets</option>
+          </select>
+        </label>
 
-      <recipe-card title="Crispy Tofu Bowls" time="30 min">
-        Baked tofu, sesame greens, and quick pickled cucumbers over rice.
-        <stat-chip slot="stats">meal prep</stat-chip>
-        <stat-chip slot="stats">gluten free</stat-chip>
-        <a slot="cta" href="recipes/crispy-tofu-bowls.html" class="inline-flex w-max rounded-lg bg-stone-900 px-3 py-2 text-sm font-semibold text-stone-50 hover:bg-stone-700">Open recipe</a>
-      </recipe-card>
+        <label class="block">
+          <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Method</span>
+          <select id="methodFilter" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200">
+            <option value="">All methods</option>
+          </select>
+        </label>
 
-      <recipe-card title="Sheet Pan Harissa Chicken" time="40 min">
-        Spiced chicken thighs with carrots, red onion, and lemon.
-        <stat-chip slot="stats">family style</stat-chip>
-        <stat-chip slot="stats">minimal cleanup</stat-chip>
-        <a slot="cta" href="recipes/sheet-pan-harissa-chicken.html" class="inline-flex w-max rounded-lg bg-stone-900 px-3 py-2 text-sm font-semibold text-stone-50 hover:bg-stone-700">Open recipe</a>
-      </recipe-card>
+        <label class="block">
+          <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">Sort</span>
+          <select id="sortFilter" class="w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-200">
+            <option value="newest">Newest</option>
+            <option value="time_asc">Time: fastest</option>
+            <option value="time_desc">Time: longest</option>
+            <option value="title_asc">Title: A-Z</option>
+          </select>
+        </label>
+      </div>
 
-      <recipe-card title="Coconut Lentil Soup" time="45 min">
-        Red lentils simmered with ginger, garlic, coconut milk, and lime.
-        <stat-chip slot="stats">freezer friendly</stat-chip>
-        <stat-chip slot="stats">dairy free</stat-chip>
-        <a slot="cta" href="recipes/coconut-lentil-soup.html" class="inline-flex w-max rounded-lg bg-stone-900 px-3 py-2 text-sm font-semibold text-stone-50 hover:bg-stone-700">Open recipe</a>
-      </recipe-card>
+      <div slot="results">
+        <div class="mb-4 flex items-center justify-between gap-3">
+          <p id="resultsSummary" class="text-sm text-stone-600">Loading recipes...</p>
+          <button id="clearFilters" class="rounded-lg bg-stone-200 px-3 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-300">Clear filters</button>
+        </div>
+
+        <div id="recipeResults" class="grid gap-6 md:grid-cols-2 xl:grid-cols-3"></div>
+
+        <div id="emptyState" class="hidden rounded-2xl bg-white p-6 text-sm text-stone-600 shadow-sm ring-1 ring-stone-200">
+          No recipes match your current filters.
+        </div>
+
+        <div class="mt-6 flex items-center justify-center gap-3">
+          <button id="prevPage" class="rounded-lg bg-stone-900 px-4 py-2 text-sm font-semibold text-stone-50 hover:bg-stone-700">Previous</button>
+          <span id="pageInfo" class="text-sm font-semibold text-stone-700">Page 1</span>
+          <button id="nextPage" class="rounded-lg bg-stone-900 px-4 py-2 text-sm font-semibold text-stone-50 hover:bg-stone-700">Next</button>
+        </div>
+
+        <noscript>
+          <div class="mt-6 rounded-2xl bg-white p-5 text-sm text-stone-700 shadow-sm ring-1 ring-stone-200">
+            <p class="font-semibold">JavaScript is off, so search and filters are unavailable.</p>
+            <ul class="mt-3 list-disc space-y-1 pl-5">
+              <li><a class="text-orange-700 underline" href="recipes/chili.html">Smoky Bean Chili</a></li>
+              <li><a class="text-orange-700 underline" href="recipes/lemon-garlic-pasta.html">Lemon Garlic Pasta</a></li>
+              <li><a class="text-orange-700 underline" href="recipes/crispy-tofu-bowls.html">Crispy Tofu Bowls</a></li>
+              <li><a class="text-orange-700 underline" href="recipes/sheet-pan-harissa-chicken.html">Sheet Pan Harissa Chicken</a></li>
+              <li><a class="text-orange-700 underline" href="recipes/coconut-lentil-soup.html">Coconut Lentil Soup</a></li>
+            </ul>
+          </div>
+        </noscript>
+      </div>
     </recipe-shell>
   </body>
 </html>

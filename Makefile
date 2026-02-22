@@ -4,7 +4,13 @@ LDFLAGS ?=
 
 BIN_DIR := bin
 TARGET := $(BIN_DIR)/templater
-SRC := src/templater.c
+SRC := \
+	src/main.c \
+	src/templater/util.c \
+	src/templater/dom.c \
+	src/templater/parser.c \
+	src/templater/engine.c \
+	src/templater/index.c
 
 .PHONY: all build run demos dev test clean
 
@@ -12,7 +18,7 @@ all: build
 
 build: $(TARGET)
 
-$(TARGET): $(SRC)
+$(TARGET): $(SRC) src/templater/common.h
 	@mkdir -p $(BIN_DIR)
 	$(CC) $(CFLAGS) $(SRC) -o $(TARGET) $(LDFLAGS)
 

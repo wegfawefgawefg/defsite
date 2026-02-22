@@ -1,6 +1,6 @@
 # Recipes Discovery UX Plan (Draft)
 
-Status: ideation (no implementation yet)
+Status: draft; first prototype now exists in `demos/recipes` using root `<html data-*>` metadata + generated `search-index.json`
 
 ## 1. Goal
 

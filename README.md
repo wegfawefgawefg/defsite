@@ -7,7 +7,7 @@ component definitions into plain browser-ready HTML.
 
 ## Current layout
 
-- `src/templater.c`: C engine implementation.
+- `src/main.c` + `src/templater/*.c`: modular C engine implementation.
 - `docs/component-spec.md`: draft spec the implementation targets.
 - `docs/spec-compliance.md`: checklist mapping spec rules to fixtures.
 - `demos/site/src`: minimal feature demo.
@@ -32,6 +32,14 @@ component definitions into plain browser-ready HTML.
 - Uses lexical scoping with shadowing for component definitions.
 - Resolves symbols from nearest scope outward.
 - Supports warning/error assertions in fixture tests.
+
+## Recipes Discovery Prototype
+
+`demos/recipes` now includes a metadata-driven discovery prototype:
+
+- Recipe detail pages in `demos/recipes/src/recipes/*.html` declare metadata on the root `<html>` tag with `data-*` attributes.
+- Build generates `generated/recipes/search-index.json`.
+- `generated/recipes/index.html` loads `recipes-search.js` to provide client-side search, filter, sort, and pagination from that JSON.
 
 ## Usage
 
