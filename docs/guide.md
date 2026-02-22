@@ -77,10 +77,10 @@ For collection pages (recipes, blog posts, docs, etc.), add `data-*` attributes 
 Build output includes `search-index.json` in each generated demo/site output directory.
 
 Each record includes:
-- Common top-level fields used by current demos (`kind`, `title`, `tags`, `time_min`, etc.).
-- A generic `meta` object containing all root `data-*` fields (without the `data-` prefix).
+- `url` for the generated page path.
+- `meta` containing all root `data-*` fields (without the `data-` prefix), as strings.
 
-This makes discovery extensible for new sites without changing C code for every new field.
+This makes discovery extensible for new sites without changing C code for every new field. Site JS can parse numbers/lists/dates from `meta` as needed.
 
 ## Build and Dev Commands
 

@@ -100,20 +100,23 @@ Example `search-index.json`:
 ```json
 [
   {
-    "slug": "smoky-bean-chili",
     "url": "recipes/smoky-bean-chili.html",
-    "title": "Smoky Bean Chili",
-    "summary": "Pantry-friendly chili with deep flavor in 35 minutes.",
-    "time_min": 35,
-    "published": "2026-02-22",
-    "diets": ["vegan", "gluten-free"],
-    "difficulty": "easy",
-    "method": "stovetop"
+    "meta": {
+      "kind": "recipe",
+      "slug": "smoky-bean-chili",
+      "title": "Smoky Bean Chili",
+      "summary": "Pantry-friendly chili with deep flavor in 35 minutes.",
+      "time-min": "35",
+      "published": "2026-02-22",
+      "diets": "vegan,gluten-free",
+      "difficulty": "easy",
+      "method": "stovetop"
+    }
   }
 ]
 ```
 
-Original prototype assumption was a whitelisted index shape. Current implementation keeps common top-level fields and also includes a generic `meta` object with all root `data-*` values.
+Original prototype assumption was a whitelisted index shape. Current implementation uses a minimal generic record shape (`url` + `meta`) where `meta` includes all root `data-*` values as strings.
 
 ## 7. Pagination Model
 

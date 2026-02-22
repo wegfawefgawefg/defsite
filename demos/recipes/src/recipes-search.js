@@ -38,6 +38,39 @@
     return String(value || "").trim().toLowerCase();
   }
 
+  function csvToList(value) {
+    return String(value || "")
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean);
+  }
+
+  function parseIntOrNull(value) {
+    const raw = String(value || "").trim();
+    if (!raw) {
+      return null;
+    }
+    const parsed = Number.parseInt(raw, 10);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function normalizeRecord(record) {
+    const meta = record && typeof record.meta === "object" ? record.meta : {};
+    return {
+      kind: normalize(meta.kind),
+      url: String(record?.url || ""),
+      title: String(meta.title || ""),
+      summary: String(meta.summary || ""),
+      image: String(meta.image || ""),
+      time_min: parseIntOrNull(meta["time-min"]),
+      serves: String(meta.serves || ""),
+      difficulty: String(meta.difficulty || ""),
+      diets: csvToList(meta.diets),
+      method: String(meta.method || ""),
+      published: String(meta.published || ""),
+    };
+  }
+
   function parseQueryParams() {
     const params = new URLSearchParams(window.location.search);
     state.query = params.get("q") || "";
@@ -227,7 +260,9 @@
     }
 
     state.allItems = (Array.isArray(records) ? records : [])
-      .filter((item) => normalize(item.kind) === "recipe");
+      .map(normalizeRecord)
+      .filter((item) => item.kind === "recipe");
+
     populateFacets();
     applyFilters();
     render();

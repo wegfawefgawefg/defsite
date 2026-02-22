@@ -1,7 +1,6 @@
 #include "common.h"
 
 #include <dirent.h>
-#include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -14,25 +13,7 @@ typedef struct {
 } MetaField;
 
 typedef struct {
-    char *kind;
-    char *slug;
     char *url;
-    char *title;
-    char *summary;
-    char *image;
-    int time_min;
-    bool has_time_min;
-    char *serves;
-    char *difficulty;
-    char **diets;
-    size_t diet_count;
-    size_t diet_cap;
-    char **tags;
-    size_t tag_count;
-    size_t tag_cap;
-    char *method;
-    char *category;
-    char *published;
     MetaField *meta;
     size_t meta_count;
     size_t meta_cap;
@@ -48,25 +29,7 @@ static void record_free(DiscoveryRecord *r) {
     if (!r) {
         return;
     }
-    free(r->kind);
-    free(r->slug);
     free(r->url);
-    free(r->title);
-    free(r->summary);
-    free(r->image);
-    free(r->serves);
-    free(r->difficulty);
-    for (size_t i = 0; i < r->diet_count; i++) {
-        free(r->diets[i]);
-    }
-    free(r->diets);
-    for (size_t i = 0; i < r->tag_count; i++) {
-        free(r->tags[i]);
-    }
-    free(r->tags);
-    free(r->method);
-    free(r->category);
-    free(r->published);
     for (size_t i = 0; i < r->meta_count; i++) {
         free(r->meta[i].key);
         free(r->meta[i].value);
@@ -92,31 +55,20 @@ static DiscoveryRecord *list_push(DiscoveryList *list) {
     return rec;
 }
 
-static void add_string(char ***items, size_t *count, size_t *cap, const char *value) {
-    if (!value || !value[0]) {
-        return;
-    }
-    if (*count == *cap) {
-        size_t next = *cap == 0 ? 4 : *cap * 2;
-        *items = xrealloc(*items, next * sizeof(char *));
-        *cap = next;
-    }
-    (*items)[(*count)++] = xstrdup(value);
+static bool path_starts_with(const char *full, const char *prefix) {
+    size_t n = strlen(prefix);
+    return strncmp(full, prefix, n) == 0;
 }
 
-static char *trimmed_copy(const char *s) {
-    if (!s) {
-        return xstrdup("");
+static char *path_relative_to(const char *full, const char *base) {
+    if (path_starts_with(full, base)) {
+        const char *p = full + strlen(base);
+        if (*p == '/') {
+            p++;
+        }
+        return xstrdup(p);
     }
-    const char *start = s;
-    while (*start && (*start == ' ' || *start == '\t' || *start == '\n' || *start == '\r')) {
-        start++;
-    }
-    const char *end = s + strlen(s);
-    while (end > start && (end[-1] == ' ' || end[-1] == '\t' || end[-1] == '\n' || end[-1] == '\r')) {
-        end--;
-    }
-    return substr_dup(start, 0, (size_t)(end - start));
+    return xstrdup(full);
 }
 
 static bool is_date_format(const char *s) {
@@ -148,67 +100,6 @@ static Node *find_html_node(Node *node) {
         }
     }
     return NULL;
-}
-
-static void split_csv(char ***items, size_t *count, size_t *cap, const char *csv) {
-    if (!csv || !csv[0]) {
-        return;
-    }
-
-    const char *cursor = csv;
-    while (*cursor) {
-        const char *comma = strchr(cursor, ',');
-        if (!comma) {
-            comma = cursor + strlen(cursor);
-        }
-        char *part = substr_dup(cursor, 0, (size_t)(comma - cursor));
-        char *trimmed = trimmed_copy(part);
-        add_string(items, count, cap, trimmed);
-        free(part);
-        free(trimmed);
-
-        if (*comma == ',') {
-            cursor = comma + 1;
-        } else {
-            break;
-        }
-    }
-}
-
-static void parse_time_min(DiscoveryRecord *rec, const char *time_raw, BuildCtx *ctx, const char *rel_path) {
-    if (!time_raw || !time_raw[0]) {
-        return;
-    }
-    char *end = NULL;
-    long v = strtol(time_raw, &end, 10);
-    if (end && *end == '\0' && v >= 0 && v <= 1000000) {
-        rec->has_time_min = true;
-        rec->time_min = (int)v;
-    } else {
-        log_warning(ctx, "metadata invalid data-time-min in %s", rel_path);
-    }
-}
-
-static void warn_required(BuildCtx *ctx, const char *rel_path, const char *field, const char *value) {
-    if (!value || !value[0]) {
-        log_warning(ctx, "metadata missing %s in %s", field, rel_path);
-    }
-}
-
-static bool path_starts_with(const char *full, const char *prefix) {
-    size_t n = strlen(prefix);
-    return strncmp(full, prefix, n) == 0;
-}
-
-static char *path_relative_to(const char *full, const char *base) {
-    if (path_starts_with(full, base)) {
-        const char *p = full + strlen(base);
-        if (*p == '/') {
-            p++;
-        }
-        return xstrdup(p);
-    }
-    return xstrdup(full);
 }
 
 static const char *record_meta_get(const DiscoveryRecord *rec, const char *key) {
@@ -275,8 +166,8 @@ static void collect_entry_from_file(const char *src_dir, const char *file_path, 
         return;
     }
 
-    const char *kind_attr = node_get_attr(html, "data-kind");
-    if (!kind_attr || !kind_attr[0]) {
+    const char *kind = node_get_attr(html, "data-kind");
+    if (!kind || !kind[0]) {
         node_free(doc);
         ctx->current_file = prev_file;
         return;
@@ -288,25 +179,8 @@ static void collect_entry_from_file(const char *src_dir, const char *file_path, 
     rec->url = rel;
     collect_meta_from_html_attrs(rec, html);
 
-    rec->kind = xstrdup(record_meta_get(rec, "kind"));
-    rec->slug = xstrdup(record_meta_get(rec, "slug"));
-    rec->title = xstrdup(record_meta_get(rec, "title"));
-    rec->summary = xstrdup(record_meta_get(rec, "summary"));
-    rec->image = xstrdup(record_meta_get(rec, "image"));
-    rec->serves = xstrdup(record_meta_get(rec, "serves"));
-    rec->difficulty = xstrdup(record_meta_get(rec, "difficulty"));
-    rec->method = xstrdup(record_meta_get(rec, "method"));
-    rec->category = xstrdup(record_meta_get(rec, "category"));
-    rec->published = xstrdup(record_meta_get(rec, "published"));
-
-    split_csv(&rec->diets, &rec->diet_count, &rec->diet_cap, record_meta_get(rec, "diets"));
-    split_csv(&rec->tags, &rec->tag_count, &rec->tag_cap, record_meta_get(rec, "tags"));
-    parse_time_min(rec, record_meta_get(rec, "time-min"), ctx, rel);
-
-    warn_required(ctx, rel, "data-slug", rec->slug);
-    warn_required(ctx, rel, "data-title", rec->title);
-
-    if (rec->published[0] && !is_date_format(rec->published)) {
+    const char *published = record_meta_get(rec, "published");
+    if (published[0] && !is_date_format(published)) {
         log_warning(ctx, "metadata invalid data-published format in %s (expected YYYY-MM-DD)", rel);
     }
 
@@ -349,11 +223,17 @@ static void scan_dir_recursive(const char *src_dir, const char *dir_path, Discov
 static int record_cmp(const void *a, const void *b) {
     const DiscoveryRecord *ra = (const DiscoveryRecord *)a;
     const DiscoveryRecord *rb = (const DiscoveryRecord *)b;
-    int p = strcmp(rb->published ? rb->published : "", ra->published ? ra->published : "");
+    int p = strcmp(record_meta_get(rb, "published"), record_meta_get(ra, "published"));
     if (p != 0) {
         return p;
     }
-    return strcmp(ra->title ? ra->title : "", rb->title ? rb->title : "");
+
+    p = strcmp(record_meta_get(ra, "title"), record_meta_get(rb, "title"));
+    if (p != 0) {
+        return p;
+    }
+
+    return strcmp(ra->url ? ra->url : "", rb->url ? rb->url : "");
 }
 
 static void json_append_escaped(StrBuf *b, const char *s) {
@@ -371,22 +251,12 @@ static void json_append_escaped(StrBuf *b, const char *s) {
     sb_append(b, "\"");
 }
 
-static void json_append_list(StrBuf *b, char **items, size_t count) {
-    sb_append(b, "[");
-    for (size_t i = 0; i < count; i++) {
-        json_append_escaped(b, items[i]);
-        if (i + 1 < count) {
-            sb_append(b, ", ");
-        }
-    }
-    sb_append(b, "]");
-}
-
 static void json_append_meta(StrBuf *b, const DiscoveryRecord *r) {
     sb_append(b, "{");
     if (r->meta_count > 0) {
         sb_append(b, "\n");
     }
+
     for (size_t i = 0; i < r->meta_count; i++) {
         sb_append(b, "      ");
         json_append_escaped(b, r->meta[i].key);
@@ -397,6 +267,7 @@ static void json_append_meta(StrBuf *b, const DiscoveryRecord *r) {
         }
         sb_append(b, "\n");
     }
+
     if (r->meta_count > 0) {
         sb_append(b, "    ");
     }
@@ -405,49 +276,30 @@ static void json_append_meta(StrBuf *b, const DiscoveryRecord *r) {
 
 static void serialize_record_json(StrBuf *b, const DiscoveryRecord *r) {
     sb_append(b, "  {\n");
-
-    sb_append(b, "    \"kind\": "); json_append_escaped(b, r->kind); sb_append(b, ",\n");
-    sb_append(b, "    \"slug\": "); json_append_escaped(b, r->slug); sb_append(b, ",\n");
-    sb_append(b, "    \"url\": "); json_append_escaped(b, r->url); sb_append(b, ",\n");
-    sb_append(b, "    \"title\": "); json_append_escaped(b, r->title); sb_append(b, ",\n");
-    sb_append(b, "    \"summary\": "); json_append_escaped(b, r->summary); sb_append(b, ",\n");
-    sb_append(b, "    \"image\": "); json_append_escaped(b, r->image); sb_append(b, ",\n");
-
-    sb_append(b, "    \"time_min\": ");
-    if (r->has_time_min) {
-        char num[32];
-        snprintf(num, sizeof(num), "%d", r->time_min);
-        sb_append(b, num);
-    } else {
-        sb_append(b, "null");
-    }
+    sb_append(b, "    \"url\": ");
+    json_append_escaped(b, r->url ? r->url : "");
     sb_append(b, ",\n");
-
-    sb_append(b, "    \"serves\": "); json_append_escaped(b, r->serves); sb_append(b, ",\n");
-    sb_append(b, "    \"difficulty\": "); json_append_escaped(b, r->difficulty); sb_append(b, ",\n");
-
-    sb_append(b, "    \"diets\": "); json_append_list(b, r->diets, r->diet_count); sb_append(b, ",\n");
-    sb_append(b, "    \"tags\": "); json_append_list(b, r->tags, r->tag_count); sb_append(b, ",\n");
-
-    sb_append(b, "    \"method\": "); json_append_escaped(b, r->method); sb_append(b, ",\n");
-    sb_append(b, "    \"category\": "); json_append_escaped(b, r->category); sb_append(b, ",\n");
-    sb_append(b, "    \"published\": "); json_append_escaped(b, r->published); sb_append(b, ",\n");
-    sb_append(b, "    \"meta\": "); json_append_meta(b, r); sb_append(b, "\n");
-
+    sb_append(b, "    \"meta\": ");
+    json_append_meta(b, r);
+    sb_append(b, "\n");
     sb_append(b, "  }");
 }
 
 static void warn_duplicate_slugs(const DiscoveryList *list, BuildCtx *ctx) {
     for (size_t i = 0; i < list->count; i++) {
-        if (!list->items[i].slug || !list->items[i].slug[0]) {
+        const char *kind_i = record_meta_get(&list->items[i], "kind");
+        const char *slug_i = record_meta_get(&list->items[i], "slug");
+
+        if (!kind_i[0] || !slug_i[0]) {
             continue;
         }
+
         for (size_t j = i + 1; j < list->count; j++) {
-            if (str_eq(list->items[i].kind, list->items[j].kind)
-                && str_eq(list->items[i].slug, list->items[j].slug)) {
-                log_warning(ctx, "duplicate metadata slug '%s' for kind '%s'",
-                            list->items[i].slug,
-                            list->items[i].kind ? list->items[i].kind : "");
+            const char *kind_j = record_meta_get(&list->items[j], "kind");
+            const char *slug_j = record_meta_get(&list->items[j], "slug");
+
+            if (str_eq(kind_i, kind_j) && str_eq(slug_i, slug_j)) {
+                log_warning(ctx, "duplicate metadata slug '%s' for kind '%s'", slug_i, kind_i);
             }
         }
     }

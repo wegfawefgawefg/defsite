@@ -38,6 +38,37 @@
     return String(value || "").trim().toLowerCase();
   }
 
+  function csvToList(value) {
+    return String(value || "")
+      .split(",")
+      .map((part) => part.trim())
+      .filter(Boolean);
+  }
+
+  function parseIntOrNull(value) {
+    const raw = String(value || "").trim();
+    if (!raw) {
+      return null;
+    }
+    const parsed = Number.parseInt(raw, 10);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  function normalizeRecord(record) {
+    const meta = record && typeof record.meta === "object" ? record.meta : {};
+    return {
+      kind: normalize(meta.kind),
+      url: String(record?.url || ""),
+      title: String(meta.title || ""),
+      summary: String(meta.summary || ""),
+      image: String(meta.image || ""),
+      tags: csvToList(meta.tags),
+      category: String(meta.category || ""),
+      time_min: parseIntOrNull(meta["time-min"]),
+      published: String(meta.published || ""),
+    };
+  }
+
   function parseQueryParams() {
     const params = new URLSearchParams(window.location.search);
     state.query = params.get("q") || "";
@@ -225,11 +256,8 @@
     }
 
     state.allItems = records
-      .filter((item) => normalize(item.kind) === "post")
-      .map((item) => ({
-        ...item,
-        tags: Array.isArray(item.tags) ? item.tags : [],
-      }));
+      .map(normalizeRecord)
+      .filter((item) => item.kind === "post");
 
     populateFacets();
     applyFilters();

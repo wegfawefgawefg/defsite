@@ -94,8 +94,8 @@ If a page root contains `data-*` metadata (on `<html ...>`), DefSite emits `sear
 
 Each record includes:
 
-- Common top-level fields (`kind`, `slug`, `title`, `summary`, etc.)
-- A generic `meta` object containing all root `data-*` fields (without the `data-` prefix)
+- `url`: the generated page path
+- `meta`: all root `data-*` fields (without the `data-` prefix), as strings
 
 This supports site-specific search/filter UI logic without custom per-site indexer code.
 
