@@ -4,6 +4,42 @@ DefSite is an HTML-first static site compiler.
 
 You define reusable components with `def-*` tags, invoke them as regular custom tags, and compile to plain static HTML. No runtime framework is required for component expansion.
 
+## Mini Tutorial
+
+This complete example uses the core language in one file:
+- `def-*` definition
+- component invocation
+- `<bind>` text binding
+- `bind-*` attribute binding
+- default slot + named slot
+
+```html
+<!doctype html>
+<html>
+  <body>
+    <def-card-link>
+      <article class="card">
+        <h2><bind name="title" default="Untitled"></bind></h2>
+        <a class="cta" bind-href="href" bind-aria-label="title">Open</a>
+        <section><slot></slot></section>
+        <footer><slot name="meta"></slot></footer>
+      </article>
+    </def-card-link>
+
+    <card-link title="Rust FFI Notes" href="/posts/rust-ffi-c.html">
+      <p>Ownership rules at the boundary are part of your ABI contract.</p>
+      <small slot="meta">11 min read</small>
+    </card-link>
+  </body>
+</html>
+```
+
+Rules:
+- `<bind name="x">` reads invocation attribute `x` as escaped text.
+- `bind-target="x"` sets output attribute `target` from invocation attribute `x`.
+- `<slot>` receives unnamed children.
+- `<slot name="meta">` receives children with `slot="meta"`.
+
 ## What DefSite Is
 
 - A build-time HTML component engine written in C.
@@ -70,6 +106,10 @@ You define reusable components with `def-*` tags, invoke them as regular custom 
 
 ## Discovery Metadata and Search Index
 
+DefSite includes a page in `search-index.json` when the root `<html>` has at least one `data-*` attribute.
+
+No metadata keys are required by the engine; schema is site-defined.
+
 For collection pages (recipes, blog posts, docs, etc.), add `data-*` attributes to root `<html>`:
 
 ```html
@@ -89,6 +129,8 @@ Build output includes `search-index.json` in each generated demo/site output dir
 Each record includes:
 - `url` for the generated page path.
 - `meta` containing all root `data-*` fields (without the `data-` prefix), as strings.
+
+Records are sorted by `url` for deterministic output.
 
 This makes discovery extensible for new sites without changing C code for every new field. Site JS can parse numbers/lists/dates from `meta` as needed.
 
